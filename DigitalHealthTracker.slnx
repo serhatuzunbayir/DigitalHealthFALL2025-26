@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="DigitalHealthTracker.Desktop/DigitalHealthTracker.Desktop.csproj" Id="c30669a4-f55e-434b-aab9-6dd71bb5294e" />
+  <Project Path="DigitalHealthTracker/DigitalHealthTracker.Data.csproj" />
+</Solution>
