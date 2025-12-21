@@ -214,9 +214,9 @@
             label9.AutoSize = true;
             label9.Location = new Point(110, 417);
             label9.Name = "label9";
-            label9.Size = new Size(171, 20);
+            label9.Size = new Size(155, 20);
             label9.TabIndex = 19;
-            label9.Text = "'*' fields are mandatory...";
+            label9.Text = "'*' fields are required...";
             // 
             // panel1
             // 

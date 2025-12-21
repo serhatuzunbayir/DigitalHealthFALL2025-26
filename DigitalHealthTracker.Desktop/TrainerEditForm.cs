@@ -35,19 +35,19 @@ namespace DigitalHealthTracker.Desktop
 			if (string.IsNullOrWhiteSpace(txtName.Text) ||
 				string.IsNullOrWhiteSpace(txtSurname.Text))
 			{
-				MessageBox.Show("Name and Surname are mandatory.");
+				MessageBox.Show("Name and Surname are required.");
 				return;
 			}
 
 			if (string.IsNullOrWhiteSpace(txtPhone.Text))
 			{
-				MessageBox.Show("Phone number is mandatory.");
+				MessageBox.Show("Phone number is required.");
 				return;
 			}
 
 			if (string.IsNullOrWhiteSpace(txtBirthYear.Text))
 			{
-				MessageBox.Show("Birth Year is mandatory.");
+				MessageBox.Show("Birth Year is required.");
 				return;
 			}
 
@@ -75,7 +75,7 @@ namespace DigitalHealthTracker.Desktop
 
 					if (trainer == null)
 					{
-						MessageBox.Show("Trainer not found in DB.");
+						MessageBox.Show("Trainer not found in DataBase.");
 						return;
 					}
 				}

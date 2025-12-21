@@ -39,12 +39,12 @@ namespace DigitalHealthTracker.Desktop
         {
             if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtSurname.Text))
             {
-                MessageBox.Show("Name and Surname is mandatory.");
+                MessageBox.Show("Name and Surname is required.");
                 return;
             }
 			if (string.IsNullOrWhiteSpace(txtPhone.Text))
 			{
-				MessageBox.Show("Phone number is mandatory.");
+				MessageBox.Show("Phone number is required.");
 				return;
 			}
 
@@ -52,7 +52,7 @@ namespace DigitalHealthTracker.Desktop
 			// Doğum yılı / boy / kilo kontrollü aldık
 			if (string.IsNullOrWhiteSpace(txtBirthYear.Text))
 			{
-				MessageBox.Show("Birth Year is mandatory.");
+				MessageBox.Show("Birth Year is required.");
 				return;
 			}
 			if (!int.TryParse(txtBirthYear.Text, out int birthYear) ||
@@ -64,7 +64,7 @@ namespace DigitalHealthTracker.Desktop
 
 			if (string.IsNullOrWhiteSpace(txtHeightCm.Text))
 			{
-				MessageBox.Show("Height is mandatory.");
+				MessageBox.Show("Height is required.");
 				return;
 			}
 			if (!double.TryParse(txtHeightCm.Text, out double heightCm) || heightCm <= 0)
@@ -75,7 +75,7 @@ namespace DigitalHealthTracker.Desktop
 
 			if (string.IsNullOrWhiteSpace(txtWeightKg.Text))
 			{
-				MessageBox.Show("Weight is mandatory.");
+				MessageBox.Show("Weight is required.");
 				return;
 			}
 

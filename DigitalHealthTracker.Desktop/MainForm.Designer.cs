@@ -34,6 +34,9 @@
             label2 = new Label();
             lblTitle = new Label();
             pnlContent = new Panel();
+            btnManagePrograms = new Button();
+            btnManageWorkouts = new Button();
+            btnApproveTrainers = new Button();
             label3 = new Label();
             pnlHeader.SuspendLayout();
             pnlContent.SuspendLayout();
@@ -103,6 +106,9 @@
             // pnlContent
             // 
             pnlContent.BackColor = Color.WhiteSmoke;
+            pnlContent.Controls.Add(btnManagePrograms);
+            pnlContent.Controls.Add(btnManageWorkouts);
+            pnlContent.Controls.Add(btnApproveTrainers);
             pnlContent.Controls.Add(label3);
             pnlContent.Controls.Add(btnManageUsers);
             pnlContent.Controls.Add(btnManageTrainers);
@@ -111,6 +117,36 @@
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(882, 453);
             pnlContent.TabIndex = 4;
+            // 
+            // btnManagePrograms
+            // 
+            btnManagePrograms.Location = new Point(184, 350);
+            btnManagePrograms.Name = "btnManagePrograms";
+            btnManagePrograms.Size = new Size(206, 50);
+            btnManagePrograms.TabIndex = 5;
+            btnManagePrograms.Text = "Manage Programs";
+            btnManagePrograms.UseVisualStyleBackColor = true;
+            btnManagePrograms.Click += btnManagePrograms_Click;
+            // 
+            // btnManageWorkouts
+            // 
+            btnManageWorkouts.Location = new Point(170, 276);
+            btnManageWorkouts.Name = "btnManageWorkouts";
+            btnManageWorkouts.Size = new Size(173, 68);
+            btnManageWorkouts.TabIndex = 4;
+            btnManageWorkouts.Text = "Manage Workouts";
+            btnManageWorkouts.UseVisualStyleBackColor = true;
+            btnManageWorkouts.Click += btnManageWorkouts_Click;
+            // 
+            // btnApproveTrainers
+            // 
+            btnApproveTrainers.Location = new Point(522, 293);
+            btnApproveTrainers.Name = "btnApproveTrainers";
+            btnApproveTrainers.Size = new Size(196, 83);
+            btnApproveTrainers.TabIndex = 3;
+            btnApproveTrainers.Text = "Approve Trainers";
+            btnApproveTrainers.UseVisualStyleBackColor = true;
+            btnApproveTrainers.Click += btnApproveTrainers_Click;
             // 
             // label3
             // 
@@ -152,5 +188,8 @@
         private Label label2;
         private Panel pnlContent;
         private Label label3;
+        private Button btnApproveTrainers;
+        private Button btnManageWorkouts;
+        private Button btnManagePrograms;
     }
 }

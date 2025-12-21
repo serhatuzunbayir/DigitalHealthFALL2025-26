@@ -7,15 +7,13 @@ namespace DigitalHealthTracker.Data.Entities
     public class WorkoutLog
     {
 		public int Id { get; set; }
-
 		public int UserId { get; set; }
-		public User User { get; set; }
+		public User User { get; set; } = null!;
+		public int WorkoutId { get; set; }
+		public Workout Workout { get; set; } = null!;
 
-		public DateTime Date { get; set; }
-		public string ExerciseName { get; set; }
-		public string Notes { get; set; }
-
-		// Program dışı mı?
-		public bool IsExtraExercise { get; set; }
+		public DateTime LogDate { get; set; } = DateTime.Now;
+		public bool Completed { get; set; }
+		public string Note { get; set; } = "";
 	}
 }

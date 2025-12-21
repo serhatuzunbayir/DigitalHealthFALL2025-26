@@ -2,6 +2,7 @@
 using DigitalHealthTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalHealthTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251220154123_AddWorkout")]
+    partial class AddWorkout
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
@@ -126,16 +129,11 @@ namespace DigitalHealthTracker.Data.Migrations
                     b.Property<int>("TrainerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("TrainerId1")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("TrainerId");
 
-                    b.HasIndex("TrainerId1");
-
-                    b.ToTable("WorkoutPrograms");
+                    b.ToTable("WorkoutProgram");
                 });
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutProgramItem", b =>
@@ -165,7 +163,7 @@ namespace DigitalHealthTracker.Data.Migrations
 
                     b.HasIndex("WorkoutProgramId");
 
-                    b.ToTable("WorkoutProgramItems");
+                    b.ToTable("WorkoutProgramItem");
                 });
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.User", b =>
@@ -178,14 +176,10 @@ namespace DigitalHealthTracker.Data.Migrations
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutProgram", b =>
                 {
                     b.HasOne("DigitalHealthTracker.Data.Entities.Trainer", "Trainer")
-                        .WithMany()
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DigitalHealthTracker.Data.Entities.Trainer", null)
                         .WithMany("Programs")
-                        .HasForeignKey("TrainerId1");
+                        .HasForeignKey("TrainerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Trainer");
                 });

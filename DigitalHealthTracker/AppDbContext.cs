@@ -17,6 +17,11 @@ namespace DigitalHealthTracker.Data
 		// Tabloyu temsil eden DbSet
 		public DbSet<User> Users { get; set; }
 		public DbSet<Trainer> Trainers { get; set; }
+		public DbSet<Workout> Workouts { get; set; }
+		public DbSet<WorkoutProgram> WorkoutPrograms { get; set; }
+		public DbSet<WorkoutProgramItem> WorkoutProgramItems { get; set; }
+
+
 
 
 		// Veritabanı bağlantı ayarı
@@ -24,8 +29,8 @@ namespace DigitalHealthTracker.Data
 		{
 			if (!optionsBuilder.IsConfigured)
 			{
-				// SQLite dosyamızın adı: digitalhealth.db
-				optionsBuilder.UseSqlite("Data Source=Healthtracker.db");
+				var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Healthtracker.db");
+				optionsBuilder.UseSqlite($"Data Source={dbPath}");
 			}
 		}
 
@@ -34,8 +39,19 @@ namespace DigitalHealthTracker.Data
 		{
 			base.OnModelCreating(modelBuilder);
 
-			// Örnek: Gereksiz, ama gösterelim:
-			// modelBuilder.Entity<User>().Property(u => u.Name).IsRequired();
+			modelBuilder.Entity<WorkoutProgram>()
+				.HasMany(p => p.Items)
+				.WithOne(i => i.WorkoutProgram)
+				.HasForeignKey(i => i.WorkoutProgramId)
+				.OnDelete(DeleteBehavior.Cascade);
+
+			modelBuilder.Entity<WorkoutProgram>()
+				.HasOne(p => p.Trainer)
+				.WithMany()
+				.HasForeignKey(p => p.TrainerId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
+
+
 	}
 }
