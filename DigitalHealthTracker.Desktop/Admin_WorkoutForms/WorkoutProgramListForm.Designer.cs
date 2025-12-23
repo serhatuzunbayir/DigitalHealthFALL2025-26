@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            cmbTrainers = new ComboBox();
             btnLoadPrograms = new Button();
             btnAddProgram = new Button();
             btnEditProgram = new Button();
@@ -36,14 +35,6 @@
             dgvPrograms = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dgvPrograms).BeginInit();
             SuspendLayout();
-            // 
-            // cmbTrainers
-            // 
-            cmbTrainers.FormattingEnabled = true;
-            cmbTrainers.Location = new Point(58, 271);
-            cmbTrainers.Name = "cmbTrainers";
-            cmbTrainers.Size = new Size(373, 28);
-            cmbTrainers.TabIndex = 0;
             // 
             // btnLoadPrograms
             // 
@@ -105,7 +96,6 @@
             Controls.Add(btnEditProgram);
             Controls.Add(btnAddProgram);
             Controls.Add(btnLoadPrograms);
-            Controls.Add(cmbTrainers);
             Name = "WorkoutProgramListForm";
             Text = "WorkoutProgramListForm";
             ((System.ComponentModel.ISupportInitialize)dgvPrograms).EndInit();
@@ -113,8 +103,6 @@
         }
 
         #endregion
-
-        private ComboBox cmbTrainers;
         private Button btnLoadPrograms;
         private Button btnAddProgram;
         private Button btnEditProgram;

@@ -30,6 +30,8 @@
         {
             dgvTrainers = new DataGridView();
             btnApprove = new Button();
+            btnClose = new Button();
+            btnRefresh = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvTrainers).BeginInit();
             SuspendLayout();
             // 
@@ -46,19 +48,41 @@
             // btnApprove
             // 
             btnApprove.Dock = DockStyle.Bottom;
-            btnApprove.Location = new Point(0, 421);
+            btnApprove.Location = new Point(0, 393);
             btnApprove.Name = "btnApprove";
-            btnApprove.Size = new Size(800, 29);
+            btnApprove.Size = new Size(800, 57);
             btnApprove.TabIndex = 1;
             btnApprove.Text = "Approve Selected Trainer";
             btnApprove.UseVisualStyleBackColor = true;
             btnApprove.Click += btnApprove_Click;
+            // 
+            // btnClose
+            // 
+            btnClose.Location = new Point(629, 286);
+            btnClose.Name = "btnClose";
+            btnClose.Size = new Size(130, 42);
+            btnClose.TabIndex = 7;
+            btnClose.Text = "Close";
+            btnClose.UseVisualStyleBackColor = true;
+            btnClose.Click += btnClose_Click;
+            // 
+            // btnRefresh
+            // 
+            btnRefresh.Location = new Point(40, 283);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(137, 45);
+            btnRefresh.TabIndex = 6;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
             // 
             // TrainerApprovalForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnClose);
+            Controls.Add(btnRefresh);
             Controls.Add(btnApprove);
             Controls.Add(dgvTrainers);
             Name = "TrainerApprovalForm";
@@ -72,5 +96,7 @@
 
         private DataGridView dgvTrainers;
         private Button btnApprove;
+        private Button btnClose;
+        private Button btnRefresh;
     }
 }

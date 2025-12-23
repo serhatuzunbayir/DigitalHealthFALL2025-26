@@ -4,20 +4,23 @@ using System.Text;
 
 namespace DigitalHealthTracker.Desktop
 {
-	public enum AppRole { Admin, Trainer, User }
+    public static class Session
+    {
+		public static AppRole Role { get; set; } = AppRole.None;
 
-	public static class Session
-	{
-		public static AppRole Role { get; set; }
-		public static int? CurrentUserId { get; set; }
-		public static int? CurrentTrainerId { get; set; }
+		public static int? AdminId { get; set; }
+		public static int? TrainerId { get; set; }
+		public static int? UserId { get; set; }
+
+		public static string DisplayName { get; set; } = "";
 
 		public static void Clear()
 		{
-			Role = default;
-			CurrentUserId = null;
-			CurrentTrainerId = null;
+			Role = AppRole.None;
+			AdminId = null;
+			TrainerId = null;
+			UserId = null;
+			DisplayName = "";
 		}
 	}
-
 }

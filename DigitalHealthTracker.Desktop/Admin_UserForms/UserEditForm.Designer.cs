@@ -173,9 +173,9 @@
             label6.AutoSize = true;
             label6.Location = new Point(120, 290);
             label6.Name = "label6";
-            label6.Size = new Size(85, 20);
+            label6.Size = new Size(79, 20);
             label6.TabIndex = 14;
-            label6.Text = "*Birth Year :";
+            label6.Text = "Birth Year :";
             // 
             // label7
             // 

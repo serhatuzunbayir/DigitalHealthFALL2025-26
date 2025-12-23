@@ -123,13 +123,7 @@ namespace DigitalHealthTracker.Desktop
             {
                 MessageBox.Show("Please select a workout.");
                 return;
-            }
-
-            if (!int.TryParse(txtDayNo.Text, out int dayNo) || dayNo < 1 || dayNo > 7)
-            {
-                MessageBox.Show("DayNo must be between 1 and 7.");
-                return;
-            }
+            }           
 
             if (!int.TryParse(txtSets.Text, out int sets) || sets <= 0)
             {
@@ -148,7 +142,7 @@ namespace DigitalHealthTracker.Desktop
             tempItems.Add(new WorkoutProgramItem
             {
                 WorkoutId = workoutId,
-                DayNo = dayNo,
+                DayNo = 1,
                 Sets = sets,
                 Reps = reps
             });

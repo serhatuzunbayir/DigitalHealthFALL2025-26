@@ -31,9 +31,13 @@
             btnManageUsers = new Button();
             btnManageTrainers = new Button();
             pnlHeader = new Panel();
-            label2 = new Label();
+            btnLogout = new Button();
+            lblSubTitle = new Label();
             lblTitle = new Label();
             pnlContent = new Panel();
+            btnApproveAssignment = new Button();
+            btnUserWorkout = new Button();
+            btnAssignProgram = new Button();
             btnManagePrograms = new Button();
             btnManageWorkouts = new Button();
             btnApproveTrainers = new Button();
@@ -48,7 +52,7 @@
             btnManageUsers.FlatStyle = FlatStyle.Flat;
             btnManageUsers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageUsers.ForeColor = Color.White;
-            btnManageUsers.Location = new Point(170, 140);
+            btnManageUsers.Location = new Point(25, 102);
             btnManageUsers.Name = "btnManageUsers";
             btnManageUsers.Size = new Size(220, 120);
             btnManageUsers.TabIndex = 0;
@@ -62,7 +66,7 @@
             btnManageTrainers.FlatStyle = FlatStyle.Flat;
             btnManageTrainers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageTrainers.ForeColor = Color.White;
-            btnManageTrainers.Location = new Point(510, 140);
+            btnManageTrainers.Location = new Point(650, 102);
             btnManageTrainers.Name = "btnManageTrainers";
             btnManageTrainers.Size = new Size(220, 120);
             btnManageTrainers.TabIndex = 1;
@@ -73,7 +77,8 @@
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.Teal;
-            pnlHeader.Controls.Add(label2);
+            pnlHeader.Controls.Add(btnLogout);
+            pnlHeader.Controls.Add(lblSubTitle);
             pnlHeader.Controls.Add(lblTitle);
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
@@ -81,16 +86,26 @@
             pnlHeader.Size = new Size(882, 80);
             pnlHeader.TabIndex = 2;
             // 
-            // label2
+            // btnLogout
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 10F);
-            label2.ForeColor = Color.WhiteSmoke;
-            label2.Location = new Point(25, 50);
-            label2.Name = "label2";
-            label2.Size = new Size(148, 23);
-            label2.TabIndex = 1;
-            label2.Text = "Admin Dashboard";
+            btnLogout.Location = new Point(803, 21);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(67, 38);
+            btnLogout.TabIndex = 2;
+            btnLogout.Text = "Logout";
+            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Click += btnLogout_Click;
+            // 
+            // lblSubTitle
+            // 
+            lblSubTitle.AutoSize = true;
+            lblSubTitle.Font = new Font("Segoe UI", 10F);
+            lblSubTitle.ForeColor = Color.WhiteSmoke;
+            lblSubTitle.Location = new Point(25, 50);
+            lblSubTitle.Name = "lblSubTitle";
+            lblSubTitle.Size = new Size(148, 23);
+            lblSubTitle.TabIndex = 1;
+            lblSubTitle.Text = "Admin Dashboard";
             // 
             // lblTitle
             // 
@@ -106,6 +121,9 @@
             // pnlContent
             // 
             pnlContent.BackColor = Color.WhiteSmoke;
+            pnlContent.Controls.Add(btnApproveAssignment);
+            pnlContent.Controls.Add(btnUserWorkout);
+            pnlContent.Controls.Add(btnAssignProgram);
             pnlContent.Controls.Add(btnManagePrograms);
             pnlContent.Controls.Add(btnManageWorkouts);
             pnlContent.Controls.Add(btnApproveTrainers);
@@ -118,11 +136,41 @@
             pnlContent.Size = new Size(882, 453);
             pnlContent.TabIndex = 4;
             // 
+            // btnApproveAssignment
+            // 
+            btnApproveAssignment.Location = new Point(472, 228);
+            btnApproveAssignment.Name = "btnApproveAssignment";
+            btnApproveAssignment.Size = new Size(170, 81);
+            btnApproveAssignment.TabIndex = 8;
+            btnApproveAssignment.Text = "Approve Assignment";
+            btnApproveAssignment.UseVisualStyleBackColor = true;
+            btnApproveAssignment.Click += btnApproveAssignment_Click;
+            // 
+            // btnUserWorkout
+            // 
+            btnUserWorkout.Location = new Point(196, 228);
+            btnUserWorkout.Name = "btnUserWorkout";
+            btnUserWorkout.Size = new Size(176, 81);
+            btnUserWorkout.TabIndex = 7;
+            btnUserWorkout.Text = "My Workout";
+            btnUserWorkout.UseVisualStyleBackColor = true;
+            btnUserWorkout.Click += btnUserWorkout_Click;
+            // 
+            // btnAssignProgram
+            // 
+            btnAssignProgram.Location = new Point(634, 323);
+            btnAssignProgram.Name = "btnAssignProgram";
+            btnAssignProgram.Size = new Size(220, 103);
+            btnAssignProgram.TabIndex = 6;
+            btnAssignProgram.Text = "Assign Program";
+            btnAssignProgram.UseVisualStyleBackColor = true;
+            btnAssignProgram.Click += btnAssignProgram_Click;
+            // 
             // btnManagePrograms
             // 
-            btnManagePrograms.Location = new Point(184, 350);
+            btnManagePrograms.Location = new Point(25, 333);
             btnManagePrograms.Name = "btnManagePrograms";
-            btnManagePrograms.Size = new Size(206, 50);
+            btnManagePrograms.Size = new Size(220, 93);
             btnManagePrograms.TabIndex = 5;
             btnManagePrograms.Text = "Manage Programs";
             btnManagePrograms.UseVisualStyleBackColor = true;
@@ -130,9 +178,9 @@
             // 
             // btnManageWorkouts
             // 
-            btnManageWorkouts.Location = new Point(170, 276);
+            btnManageWorkouts.Location = new Point(336, 102);
             btnManageWorkouts.Name = "btnManageWorkouts";
-            btnManageWorkouts.Size = new Size(173, 68);
+            btnManageWorkouts.Size = new Size(228, 120);
             btnManageWorkouts.TabIndex = 4;
             btnManageWorkouts.Text = "Manage Workouts";
             btnManageWorkouts.UseVisualStyleBackColor = true;
@@ -140,9 +188,9 @@
             // 
             // btnApproveTrainers
             // 
-            btnApproveTrainers.Location = new Point(522, 293);
+            btnApproveTrainers.Location = new Point(336, 323);
             btnApproveTrainers.Name = "btnApproveTrainers";
-            btnApproveTrainers.Size = new Size(196, 83);
+            btnApproveTrainers.Size = new Size(228, 108);
             btnApproveTrainers.TabIndex = 3;
             btnApproveTrainers.Text = "Approve Trainers";
             btnApproveTrainers.UseVisualStyleBackColor = true;
@@ -171,6 +219,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
             Text = "Digital Health Tracker – Admin Panel";
+            Load += MainForm_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
             pnlContent.ResumeLayout(false);
@@ -185,11 +234,15 @@
         private Panel pnlHeader;
         private Label lblTitle;
         private Label label1;
-        private Label label2;
+        private Label lblSubTitle;
         private Panel pnlContent;
         private Label label3;
         private Button btnApproveTrainers;
         private Button btnManageWorkouts;
         private Button btnManagePrograms;
+        private Button btnAssignProgram;
+        private Button btnUserWorkout;
+        private Button btnApproveAssignment;
+        private Button btnLogout;
     }
 }

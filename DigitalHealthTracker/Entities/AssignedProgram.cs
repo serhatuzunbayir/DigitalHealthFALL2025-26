@@ -5,7 +5,6 @@ using System.Text;
 
 namespace DigitalHealthTracker.Data.Entities
 {
-	public enum AssignmentStatus { Pending, Approved, Active, Completed }
 	public class AssignedProgram
     {
 		public int Id { get; set; }

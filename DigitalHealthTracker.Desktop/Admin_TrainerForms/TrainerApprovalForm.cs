@@ -42,30 +42,40 @@ namespace DigitalHealthTracker.Desktop
 
         private void btnApprove_Click(object sender, EventArgs e)
         {
-			if (dgvTrainers.CurrentRow == null)
-			{
-				MessageBox.Show("Please select a trainer.");
-				return;
-			}
+            if (dgvTrainers.CurrentRow == null)
+            {
+                MessageBox.Show("Please select a trainer.");
+                return;
+            }
 
-			int trainerId = (int)dgvTrainers.CurrentRow.Cells["Id"].Value;
+            int trainerId = (int)dgvTrainers.CurrentRow.Cells["Id"].Value;
 
-			using (var db = new AppDbContext())
-			{
-				var trainer = db.Trainers.Find(trainerId);
+            using (var db = new AppDbContext())
+            {
+                var trainer = db.Trainers.Find(trainerId);
 
-				if (trainer == null)
-				{
-					MessageBox.Show("Trainer not found.");
-					return;
-				}
+                if (trainer == null)
+                {
+                    MessageBox.Show("Trainer not found.");
+                    return;
+                }
 
-				trainer.IsApproved = true;
-				db.SaveChanges();
-			}
+                trainer.IsApproved = true;
+                db.SaveChanges();
+            }
 
-			MessageBox.Show("Trainer approved successfully.");
-			LoadPendingTrainers();
-		}
+            MessageBox.Show("Trainer approved successfully.");
+            LoadPendingTrainers();
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            LoadPendingTrainers();
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            Close();    
+        }
     }
 }

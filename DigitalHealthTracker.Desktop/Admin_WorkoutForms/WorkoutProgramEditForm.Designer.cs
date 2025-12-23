@@ -30,12 +30,10 @@
         {
             txtTitle = new TextBox();
             cmbWorkouts = new ComboBox();
-            txtDayNo = new TextBox();
             txtSets = new TextBox();
             txtReps = new TextBox();
             label1 = new Label();
             label2 = new Label();
-            label3 = new Label();
             label4 = new Label();
             label5 = new Label();
             btnAddItem = new Button();
@@ -48,7 +46,7 @@
             // 
             // txtTitle
             // 
-            txtTitle.Location = new Point(227, 208);
+            txtTitle.Location = new Point(227, 255);
             txtTitle.Name = "txtTitle";
             txtTitle.Size = new Size(125, 27);
             txtTitle.TabIndex = 0;
@@ -56,17 +54,10 @@
             // cmbWorkouts
             // 
             cmbWorkouts.FormattingEnabled = true;
-            cmbWorkouts.Location = new Point(221, 250);
+            cmbWorkouts.Location = new Point(221, 297);
             cmbWorkouts.Name = "cmbWorkouts";
             cmbWorkouts.Size = new Size(245, 28);
             cmbWorkouts.TabIndex = 1;
-            // 
-            // txtDayNo
-            // 
-            txtDayNo.Location = new Point(221, 301);
-            txtDayNo.Name = "txtDayNo";
-            txtDayNo.Size = new Size(125, 27);
-            txtDayNo.TabIndex = 2;
             // 
             // txtSets
             // 
@@ -85,7 +76,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(66, 211);
+            label1.Location = new Point(66, 258);
             label1.Name = "label1";
             label1.Size = new Size(45, 20);
             label1.TabIndex = 5;
@@ -94,20 +85,11 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(72, 258);
+            label2.Location = new Point(72, 305);
             label2.Name = "label2";
             label2.Size = new Size(72, 20);
             label2.TabIndex = 6;
             label2.Text = "Workout :";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(68, 304);
-            label3.Name = "label3";
-            label3.Size = new Size(74, 20);
-            label3.TabIndex = 7;
-            label3.Text = "Day(1-7) :";
             // 
             // label4
             // 
@@ -129,7 +111,7 @@
             // 
             // btnAddItem
             // 
-            btnAddItem.Location = new Point(506, 210);
+            btnAddItem.Location = new Point(383, 357);
             btnAddItem.Name = "btnAddItem";
             btnAddItem.Size = new Size(104, 62);
             btnAddItem.TabIndex = 10;
@@ -149,7 +131,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(534, 381);
+            btnCancel.Location = new Point(676, 268);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(94, 29);
             btnCancel.TabIndex = 13;
@@ -159,7 +141,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(534, 329);
+            btnSave.Location = new Point(676, 219);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(94, 29);
             btnSave.TabIndex = 14;
@@ -169,7 +151,7 @@
             // 
             // btnRemoveItem
             // 
-            btnRemoveItem.Location = new Point(637, 211);
+            btnRemoveItem.Location = new Point(511, 357);
             btnRemoveItem.Name = "btnRemoveItem";
             btnRemoveItem.Size = new Size(109, 61);
             btnRemoveItem.TabIndex = 15;
@@ -189,12 +171,10 @@
             Controls.Add(btnAddItem);
             Controls.Add(label5);
             Controls.Add(label4);
-            Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(txtReps);
             Controls.Add(txtSets);
-            Controls.Add(txtDayNo);
             Controls.Add(cmbWorkouts);
             Controls.Add(txtTitle);
             Name = "WorkoutProgramEditForm";
@@ -208,12 +188,10 @@
 
         private TextBox txtTitle;
         private ComboBox cmbWorkouts;
-        private TextBox txtDayNo;
         private TextBox txtSets;
         private TextBox txtReps;
         private Label label1;
         private Label label2;
-        private Label label3;
         private Label label4;
         private Label label5;
         private Button btnAddItem;

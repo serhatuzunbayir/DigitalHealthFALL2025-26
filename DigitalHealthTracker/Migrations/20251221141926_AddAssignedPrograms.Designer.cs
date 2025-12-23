@@ -3,6 +3,7 @@ using System;
 using DigitalHealthTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,35 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalHealthTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251221141926_AddAssignedPrograms")]
+    partial class AddAssignedPrograms
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.0");
-
-            modelBuilder.Entity("DigitalHealthTracker.Data.Entities.Admin", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Admins");
-                });
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.AssignedProgram", b =>
                 {
@@ -95,10 +75,6 @@ namespace DigitalHealthTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -133,10 +109,6 @@ namespace DigitalHealthTracker.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -178,49 +150,6 @@ namespace DigitalHealthTracker.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Workouts");
-                });
-
-            modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CompletedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("DayNo")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Reps")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Sets")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("TrainerId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("WorkoutId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("WorkoutProgramId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TrainerId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("WorkoutId");
-
-                    b.HasIndex("WorkoutProgramId");
-
-                    b.ToTable("WorkoutLogs");
                 });
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutProgram", b =>
@@ -310,41 +239,6 @@ namespace DigitalHealthTracker.Data.Migrations
                     b.HasOne("DigitalHealthTracker.Data.Entities.Trainer", null)
                         .WithMany("Users")
                         .HasForeignKey("TrainerId");
-                });
-
-            modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutLog", b =>
-                {
-                    b.HasOne("DigitalHealthTracker.Data.Entities.Trainer", "Trainer")
-                        .WithMany()
-                        .HasForeignKey("TrainerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DigitalHealthTracker.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DigitalHealthTracker.Data.Entities.Workout", "Workout")
-                        .WithMany()
-                        .HasForeignKey("WorkoutId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("DigitalHealthTracker.Data.Entities.WorkoutProgram", "WorkoutProgram")
-                        .WithMany()
-                        .HasForeignKey("WorkoutProgramId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Trainer");
-
-                    b.Navigation("User");
-
-                    b.Navigation("Workout");
-
-                    b.Navigation("WorkoutProgram");
                 });
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutProgram", b =>
