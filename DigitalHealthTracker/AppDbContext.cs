@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Data.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using DigitalHealthTracker.Data.Entities;
 
 namespace DigitalHealthTracker.Data
 {
@@ -25,13 +26,13 @@ namespace DigitalHealthTracker.Data
 		public DbSet<Admin> Admins { get; set; }
 
 
-
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			if (optionsBuilder.IsConfigured) return;
-
-			var dbPath = DbPaths.GetDbFilePath();
-			optionsBuilder.UseSqlite($"Data Source={dbPath}");
+			if (!optionsBuilder.IsConfigured)
+			{
+				var dbPath = DbPath.GetDbFilePath();
+				optionsBuilder.UseSqlite($"Data Source={dbPath}");
+			}
 		}
 
 
@@ -50,9 +51,11 @@ namespace DigitalHealthTracker.Data
 			// Relation on WorkoutProgram-Trainer
 			modelBuilder.Entity<WorkoutProgram>()
 				.HasOne(p => p.Trainer)
-				.WithMany()
+				.WithMany(t => t.Programs)
 				.HasForeignKey(p => p.TrainerId)
+				.HasPrincipalKey(t => t.Id)
 				.OnDelete(DeleteBehavior.Restrict);
+
 
 			// ***Relations on AssignedProgram***
 			modelBuilder.Entity<AssignedProgram>()

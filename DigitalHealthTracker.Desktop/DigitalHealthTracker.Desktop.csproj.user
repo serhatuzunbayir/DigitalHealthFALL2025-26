@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Compile Update="Admin_UserForms\UserListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_WorkoutForms\AssignProgramForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_TrainerForms\TrainerApprovalForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_TrainerForms\TrainerEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_TrainerForms\TrainerListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_UserForms\UserEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_UserForms\UserWorkoutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_WorkoutForms\WorkoutEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_WorkoutForms\WorkoutListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_WorkoutForms\WorkoutProgramEditForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Admin_WorkoutForms\WorkoutProgramListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="RegistrationAndLogin\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="RegistrationAndLogin\TrainerRegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="RegistrationAndLogin\UserRegisterForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="UserAssignmentsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
+</Project>

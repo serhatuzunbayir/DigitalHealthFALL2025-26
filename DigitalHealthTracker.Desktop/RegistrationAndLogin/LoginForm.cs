@@ -6,6 +6,8 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using DigitalHealthTracker.Data.Infrastructure;
+
 
 namespace DigitalHealthTracker.Desktop.RegistrationAndLogin
 {

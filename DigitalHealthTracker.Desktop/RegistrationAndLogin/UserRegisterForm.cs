@@ -7,6 +7,9 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Data.Infrastructure;
+using System.Linq;
+
 
 
 namespace DigitalHealthTracker.Desktop.RegistrationAndLogin

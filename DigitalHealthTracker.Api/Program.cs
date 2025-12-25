@@ -1,4 +1,6 @@
 using DigitalHealthTracker.Data;
+using DigitalHealthTracker.Data.Infrastructure;
+using DigitalHealthTracker.Data.Seed;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
@@ -7,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-	var dbPath = DigitalHealthTracker.Data.DbPaths.GetDbFilePath();
+	var dbPath = DigitalHealthTracker.Data.Infrastructure.DbPath.GetDbFilePath();
 	Debug.WriteLine("DB PATH = " + dbPath);
 	Console.WriteLine("DB PATH = " + dbPath);
 
@@ -36,6 +38,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
+
+
+
+using (var scope = app.Services.CreateScope())
+{
+	var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+	db.Database.Migrate();
+	DbSeeder.Seed(db);
+}
 app.Run();
 
 static async Task EnsureAssignedProgramIdColumnAsync(IServiceProvider services)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DigitalHealthTracker.Data;
+using DigitalHealthTracker.Data.Infrastructure;
 
 namespace DigitalHealthTracker.Api.Controllers
 {
@@ -9,6 +10,6 @@ namespace DigitalHealthTracker.Api.Controllers
 	{
 		[HttpGet("dbpath")]
 		public IActionResult GetDbPath()
-			=> Ok(new { DbPath = DbPaths.GetDbFilePath() });
+			=> Ok(new { DbPath = DbPath.GetDbFilePath() });
 	}
 }
