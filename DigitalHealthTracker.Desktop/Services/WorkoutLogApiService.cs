@@ -6,22 +6,20 @@ namespace DigitalHealthTracker.Desktop.Services
 {
 	public class WorkoutLogApiService
 	{
+		// USER history
 		public async Task<List<WorkoutLogRowDto>> GetUserHistoryAsync(int userId)
 		{
 			using var client = ApiClient.Create();
 			var data = await client.GetFromJsonAsync<List<WorkoutLogRowDto>>($"/api/WorkoutLogs/user/{userId}");
 			return data ?? new List<WorkoutLogRowDto>();
 		}
-	}
 
-	public class WorkoutLogRowDto
-	{
-		public int Id { get; set; }
-		public string Program { get; set; } = "";
-		public string Workout { get; set; } = "";
-		public int DayNo { get; set; }
-		public int Sets { get; set; }
-		public int Reps { get; set; }
-		public string CompletedAt { get; set; } = "";
+		// TRAINER student logs (aynı şeyi döndürüyor, farklı endpoint)
+		public async Task<List<WorkoutLogRowDto>> GetByUserAsync(int userId)
+		{
+			using var client = ApiClient.Create();
+			var data = await client.GetFromJsonAsync<List<WorkoutLogRowDto>>($"/api/WorkoutLogs/by-user/{userId}");
+			return data ?? new List<WorkoutLogRowDto>();
+		}
 	}
 }

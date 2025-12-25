@@ -11,12 +11,29 @@ namespace DigitalHealthTracker.Api.Controllers
 		private readonly AppDbContext _context;
 		public WorkoutLogsController(AppDbContext context) => _context = context;
 
-		// ✅ USER: tüm log geçmişi (programdaki hareketler tek tek)
+		// ✅ USER: tüm log geçmişi
 		// GET: /api/WorkoutLogs/user/10
 		[HttpGet("user/{userId:int}")]
 		public async Task<IActionResult> GetHistoryForUser(int userId)
 		{
+			var logs = await BuildUserLogs(userId);
+			return Ok(logs);
+		}
+
+		// ✅ TRAINER: seçilen user'ın logları (aynı data, farklı route)
+		// GET: /api/WorkoutLogs/by-user/10
+		[HttpGet("by-user/{userId:int}")]
+		public async Task<IActionResult> GetByUser(int userId)
+		{
+			var logs = await BuildUserLogs(userId);
+			return Ok(logs);
+		}
+
+		// ortak query (tek yerden yönetelim)
+		private async Task<List<object>> BuildUserLogs(int userId)
+		{
 			var logs = await _context.WorkoutLogs
+				.AsNoTracking()
 				.Include(l => l.WorkoutProgram)
 				.Include(l => l.Workout)
 				.Where(l => l.UserId == userId)
@@ -24,8 +41,8 @@ namespace DigitalHealthTracker.Api.Controllers
 				.Select(l => new
 				{
 					l.Id,
-					Program = l.WorkoutProgram.Title,
-					Workout = l.Workout.Name,
+					ProgramTitle = l.WorkoutProgram.Title,
+					WorkoutName = l.Workout.Name,
 					l.DayNo,
 					l.Sets,
 					l.Reps,
@@ -33,7 +50,8 @@ namespace DigitalHealthTracker.Api.Controllers
 				})
 				.ToListAsync();
 
-			return Ok(logs);
+			// anonymous list'i object list olarak döndürüyoruz (controller içinde kullanmak için)
+			return logs.Cast<object>().ToList();
 		}
 	}
 }

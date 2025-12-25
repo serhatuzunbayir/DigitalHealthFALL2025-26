@@ -10,7 +10,7 @@ namespace DigitalHealthTracker.Desktop
 {
 	internal static class HealthTracker
 	{
-		
+		//API Display Address: https://localhost:7193/Swagger
 
 		[STAThread]
 		static void Main()

@@ -1,4 +1,5 @@
 ﻿using DigitalHealthTracker.Data.Entities;
+using System;
 using System.Collections.Generic;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -15,7 +16,14 @@ namespace DigitalHealthTracker.Desktop.Services
 			return users ?? new List<User>();
 		}
 
-		// POST: api/Users
+		// ✅ NEW: GET: api/Users/{id}
+		public async Task<User?> GetByIdAsync(int id)
+		{
+			using var client = ApiClient.Create();
+			return await client.GetFromJsonAsync<User>($"/api/Users/{id}");
+		}
+
+		// POST: api/Users  (Admin add kaldırıldı, normalde kullanılmayacak)
 		public async Task<User?> CreateAsync(User user)
 		{
 			using var client = ApiClient.Create();
@@ -28,8 +36,6 @@ namespace DigitalHealthTracker.Desktop.Services
 		public async Task<User?> UpdateAsync(int id, User user)
 		{
 			using var client = ApiClient.Create();
-
-			// Route id esas, body'deki Id önemli değil
 			var resp = await client.PutAsJsonAsync($"/api/Users/{id}", user);
 
 			if (!resp.IsSuccessStatusCode)
@@ -40,7 +46,6 @@ namespace DigitalHealthTracker.Desktop.Services
 
 			return await resp.Content.ReadFromJsonAsync<User>();
 		}
-
 
 		// DELETE: api/Users/{id}
 		public async Task DeleteAsync(int id)

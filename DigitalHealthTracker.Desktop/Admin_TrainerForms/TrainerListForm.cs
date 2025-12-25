@@ -68,27 +68,6 @@ namespace DigitalHealthTracker.Desktop
 			return dgvTrainers.CurrentRow?.DataBoundItem as Trainer;
 		}
 
-		private async void btnAddTrainer_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				using (var frm = new TrainerEditForm())
-				{
-					var result = frm.ShowDialog();
-					if (result != DialogResult.OK) return;
-
-					await _trainerApi.CreateAsync(frm.EditedTrainer);
-					await LoadTrainers();
-					TrainerChanged?.Invoke("A new trainer was added.");
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.ToString(), "Add Trainer Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
 		private async void btnEditTrainer_Click(object sender, EventArgs e)
 		{
 			var selectedTrainer = GetSelectedTrainer();
@@ -100,15 +79,13 @@ namespace DigitalHealthTracker.Desktop
 
 			try
 			{
-				using (var frm = new TrainerEditForm(selectedTrainer))
-				{
-					var result = frm.ShowDialog();
-					if (result != DialogResult.OK) return;
+				using var frm = new TrainerEditForm(selectedTrainer);
+				if (frm.ShowDialog() != DialogResult.OK) return;
 
-					await _trainerApi.UpdateAsync(selectedTrainer.Id, frm.EditedTrainer);
-					await LoadTrainers();
-					TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was updated.");
-				}
+				await _trainerApi.UpdateAsync(selectedTrainer.Id, frm.EditedTrainer);
+				await LoadTrainers();
+
+				TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was updated.");
 			}
 			catch (Exception ex)
 			{

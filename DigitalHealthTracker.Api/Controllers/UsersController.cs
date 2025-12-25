@@ -16,6 +16,7 @@ namespace DigitalHealthTracker.Api.Controllers
 			_context = context;
 		}
 
+		// GET: api/Users
 		[HttpGet]
 		public async Task<ActionResult<List<User>>> GetAll()
 		{
@@ -26,6 +27,7 @@ namespace DigitalHealthTracker.Api.Controllers
 			return Ok(users);
 		}
 
+		// GET: api/Users/5
 		[HttpGet("{id:int}")]
 		public async Task<ActionResult<User>> GetById(int id)
 		{
@@ -34,21 +36,16 @@ namespace DigitalHealthTracker.Api.Controllers
 			return Ok(user);
 		}
 
-		[HttpPost]
-		public async Task<ActionResult<User>> Create(User user)
-		{
-			_context.Users.Add(user);
-			await _context.SaveChangesAsync();
-			return Ok(user);
-		}
+		// ❌ ADMIN CREATE YOK (Register ile oluşuyor)
+		// [HttpPost] kaldırıldı
 
+		// PUT: api/Users/5
 		[HttpPut("{id:int}")]
 		public async Task<IActionResult> Update(int id, User user)
 		{
 			var existing = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 			if (existing == null) return NotFound($"User not found: {id}");
 
-			// Route id esas: body'den Id gelmese bile sorun yok
 			existing.Name = user.Name;
 			existing.Surname = user.Surname;
 			existing.Email = user.Email;
@@ -58,11 +55,12 @@ namespace DigitalHealthTracker.Api.Controllers
 			existing.HeightCm = user.HeightCm;
 			existing.WeightKg = user.WeightKg;
 
+			// PasswordHash'a dokunma!
 			await _context.SaveChangesAsync();
 			return Ok(existing);
 		}
 
-
+		// DELETE: api/Users/5
 		[HttpDelete("{id:int}")]
 		public async Task<IActionResult> Delete(int id)
 		{
@@ -74,9 +72,7 @@ namespace DigitalHealthTracker.Api.Controllers
 			return Ok();
 		}
 
-
-		// get spesific user according t0o id in order to assign(trainer) program to user
-		//desktop UI -> combobox
+		// desktop UI -> combobox (kalsın)
 		[HttpGet("lookup")]
 		public async Task<IActionResult> GetLookup()
 		{
@@ -91,6 +87,34 @@ namespace DigitalHealthTracker.Api.Controllers
 
 			return Ok(users);
 		}
+
+		// GET: api/Users/assigned-to-trainer/5
+		// Trainer kendi sorumlu olduğu kullanıcıları combobox için çeker
+		[HttpGet("assigned-to-trainer/{trainerId:int}")]
+		public async Task<IActionResult> GetUsersAssignedToTrainer(int trainerId)
+		{
+			var users = await _context.AssignedPrograms
+				.Where(ap => ap.TrainerId == trainerId)
+				.Select(ap => ap.UserId)
+				.Distinct()
+				.Join(
+					_context.Users,
+					userId => userId,
+					u => u.Id,
+					(userId, u) => new
+					{
+						u.Id,
+						FullName = u.Name + " " + u.Surname + " (" + u.Phone + ")",
+						u.HeightCm,
+						u.WeightKg
+					}
+				)
+				.OrderBy(x => x.Id)
+				.ToListAsync();
+
+			return Ok(users);
+		}
+
 
 	}
 }

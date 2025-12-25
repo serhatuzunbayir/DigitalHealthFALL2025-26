@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             dgvTrainers = new DataGridView();
-            btnAddTrainer = new Button();
             btnEditTrainer = new Button();
             btnDeleteTrainer = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvTrainers).BeginInit();
@@ -49,20 +48,6 @@
             dgvTrainers.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvTrainers.Size = new Size(882, 350);
             dgvTrainers.TabIndex = 0;
-            // 
-            // btnAddTrainer
-            // 
-            btnAddTrainer.BackColor = Color.Teal;
-            btnAddTrainer.FlatStyle = FlatStyle.Flat;
-            btnAddTrainer.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            btnAddTrainer.ForeColor = Color.WhiteSmoke;
-            btnAddTrainer.Location = new Point(220, 380);
-            btnAddTrainer.Name = "btnAddTrainer";
-            btnAddTrainer.Size = new Size(135, 50);
-            btnAddTrainer.TabIndex = 1;
-            btnAddTrainer.Text = "Add Trainer";
-            btnAddTrainer.UseVisualStyleBackColor = false;
-            btnAddTrainer.Click += btnAddTrainer_Click;
             // 
             // btnEditTrainer
             // 
@@ -100,7 +85,6 @@
             ClientSize = new Size(882, 453);
             Controls.Add(btnDeleteTrainer);
             Controls.Add(btnEditTrainer);
-            Controls.Add(btnAddTrainer);
             Controls.Add(dgvTrainers);
             Name = "TrainerListForm";
             Text = "Trainer List Panel";
@@ -111,7 +95,6 @@
         #endregion
 
         private DataGridView dgvTrainers;
-        private Button btnAddTrainer;
         private Button btnEditTrainer;
         private Button btnDeleteTrainer;
     }

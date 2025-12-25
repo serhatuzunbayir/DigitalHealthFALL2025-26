@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -72,21 +71,16 @@ namespace DigitalHealthTracker.Desktop
 
 		private User? GetSelectedUser()
 		{
-			if (dgvUsers.CurrentRow == null)
-				return null;
-
-			return dgvUsers.CurrentRow.DataBoundItem as User;
+			return dgvUsers.CurrentRow?.DataBoundItem as User;
 		}
 
 		private void dgvUsers_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
-			// Bilerek boş — Designer bağlıysa patlamasın diye duruyor
 		}
 
 		private async void btnEditUser_Click(object sender, EventArgs e)
 		{
 			var selectedUser = GetSelectedUser();
-
 			if (selectedUser == null)
 			{
 				MessageBox.Show("Please select a user to edit...");
@@ -95,58 +89,13 @@ namespace DigitalHealthTracker.Desktop
 
 			try
 			{
-				using (var frm = new UserEditForm(selectedUser))
-				{
-					var result = frm.ShowDialog();
+				using var frm = new UserEditForm(selectedUser);
+				if (frm.ShowDialog() != DialogResult.OK) return;
 
-					if (result != DialogResult.OK)
-						return;
+				await _userApi.UpdateAsync(selectedUser.Id, frm.EditedUser);
+				await LoadUsers();
 
-					// 🔴 ASIL OLAY BURASI
-					await _userApi.UpdateAsync(selectedUser.Id, frm.EditedUser);
-
-					// listeyi yenile
-					await LoadUsers();
-
-					UserChanged?.Invoke(
-						$"User '{selectedUser.Name} {selectedUser.Surname}' was updated."
-					);
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(
-					ex.Message,
-					"Edit Error",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error
-				);
-			}
-		}
-
-		private async void btnDeleteUser_Click(object sender, EventArgs e)
-		{
-			var selectedUser = GetSelectedUser();
-
-			if (selectedUser == null)
-			{
-				MessageBox.Show("Please select a user to edit...");
-				return;
-			}
-
-			try
-			{
-				using (var frm = new UserEditForm(selectedUser))
-				{
-					var result = frm.ShowDialog();
-
-					if (result == DialogResult.OK)
-					{
-						await _userApi.UpdateAsync(selectedUser.Id, frm.EditedUser);
-						await LoadUsers();
-						UserChanged?.Invoke($"User '{selectedUser.Name} {selectedUser.Surname}' was updated.");
-					}
-				}
+				UserChanged?.Invoke($"User '{selectedUser.Name} {selectedUser.Surname}' was updated.");
 			}
 			catch (Exception ex)
 			{
@@ -155,25 +104,33 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-		private async void btnAddUser_Click(object sender, EventArgs e)
+		private async void btnDeleteUser_Click(object sender, EventArgs e)
 		{
+			var selectedUser = GetSelectedUser();
+			if (selectedUser == null)
+			{
+				MessageBox.Show("Please select a user to delete...");
+				return;
+			}
+
+			var confirm = MessageBox.Show(
+				$"Are you sure to delete user: '{selectedUser.Name} {selectedUser.Surname}' ?",
+				"Delete Confirmation",
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Question);
+
+			if (confirm != DialogResult.Yes) return;
+
 			try
 			{
-				using (var frm = new UserEditForm())
-				{
-					var result = frm.ShowDialog();
+				await _userApi.DeleteAsync(selectedUser.Id);
+				await LoadUsers();
 
-					if (result == DialogResult.OK)
-					{
-						await _userApi.CreateAsync(frm.EditedUser);
-						await LoadUsers();
-						UserChanged?.Invoke("A new user was added.");
-					}
-				}
+				UserChanged?.Invoke($"User '{selectedUser.Name} {selectedUser.Surname}' was deleted.");
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Add Error",
+				MessageBox.Show(ex.ToString(), "Delete Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}

@@ -16,7 +16,8 @@ namespace DigitalHealthTracker.Desktop
 			InitializeComponent();
 		}
 
-		public TrainerEditForm(Trainer tempTrainer) : this()
+		// ✅ Admin editlerken hideApproval=false, Trainer editlerken hideApproval=true göndereceğiz
+		public TrainerEditForm(Trainer tempTrainer, bool hideApproval = false) : this()
 		{
 			trainerIdEdit = tempTrainer.Id;
 
@@ -26,6 +27,13 @@ namespace DigitalHealthTracker.Desktop
 			txtEmail.Text = tempTrainer.Email;
 			txtBirthYear.Text = tempTrainer.BirthYear > 0 ? tempTrainer.BirthYear.ToString() : "";
 			chkIsApproved.Checked = tempTrainer.IsApproved;
+
+			if (hideApproval)
+			{
+				chkIsApproved.Visible = false;
+				// Eğer yanında label varsa onun adını biliyorsan onu da kapat:
+				// lblIsApproved.Visible = false;
+			}
 		}
 
 		private void btnSave_Click(object sender, EventArgs e)
@@ -63,6 +71,9 @@ namespace DigitalHealthTracker.Desktop
 				Phone = txtPhone.Text.Trim(),
 				Email = txtEmail.Text.Trim(),
 				BirthYear = birthYear,
+
+				// ✅ Trainer editlerken checkbox görünmez ama value burada kalır.
+				// Trainer için admin onayı değişmesin diye istersek aşağıda ayrıca kilitleyebiliriz:
 				IsApproved = chkIsApproved.Checked
 			};
 

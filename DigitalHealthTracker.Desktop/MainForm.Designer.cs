@@ -31,10 +31,20 @@
             btnManageUsers = new Button();
             btnManageTrainers = new Button();
             pnlHeader = new Panel();
+            btnEditMyProfile = new Button();
             btnLogout = new Button();
             lblSubTitle = new Label();
             lblTitle = new Label();
             pnlContent = new Panel();
+            btnStudentLogs = new Button();
+            lblWeightDiffValueTxt = new Label();
+            lblTargetWeightValueTxt = new Label();
+            lblBmiCategoryValueTxt = new Label();
+            lblBmiValueTxt = new Label();
+            lblWeightDiffValue = new Label();
+            lblTargetWeightValue = new Label();
+            lblBmiCategoryValue = new Label();
+            lblBmiValue = new Label();
             btnApproveAssignment = new Button();
             btnUserWorkout = new Button();
             btnAssignProgram = new Button();
@@ -52,9 +62,9 @@
             btnManageUsers.FlatStyle = FlatStyle.Flat;
             btnManageUsers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageUsers.ForeColor = Color.White;
-            btnManageUsers.Location = new Point(25, 102);
+            btnManageUsers.Location = new Point(25, 111);
             btnManageUsers.Name = "btnManageUsers";
-            btnManageUsers.Size = new Size(220, 120);
+            btnManageUsers.Size = new Size(220, 111);
             btnManageUsers.TabIndex = 0;
             btnManageUsers.Text = "Manage Users";
             btnManageUsers.UseVisualStyleBackColor = false;
@@ -77,6 +87,7 @@
             // pnlHeader
             // 
             pnlHeader.BackColor = Color.Teal;
+            pnlHeader.Controls.Add(btnEditMyProfile);
             pnlHeader.Controls.Add(btnLogout);
             pnlHeader.Controls.Add(lblSubTitle);
             pnlHeader.Controls.Add(lblTitle);
@@ -85,6 +96,16 @@
             pnlHeader.Name = "pnlHeader";
             pnlHeader.Size = new Size(882, 80);
             pnlHeader.TabIndex = 2;
+            // 
+            // btnEditMyProfile
+            // 
+            btnEditMyProfile.Location = new Point(679, 15);
+            btnEditMyProfile.Name = "btnEditMyProfile";
+            btnEditMyProfile.Size = new Size(94, 50);
+            btnEditMyProfile.TabIndex = 3;
+            btnEditMyProfile.Text = "Edit My Profile";
+            btnEditMyProfile.UseVisualStyleBackColor = true;
+            btnEditMyProfile.Click += btnEditMyProfile_Click;
             // 
             // btnLogout
             // 
@@ -121,6 +142,15 @@
             // pnlContent
             // 
             pnlContent.BackColor = Color.WhiteSmoke;
+            pnlContent.Controls.Add(btnStudentLogs);
+            pnlContent.Controls.Add(lblWeightDiffValueTxt);
+            pnlContent.Controls.Add(lblTargetWeightValueTxt);
+            pnlContent.Controls.Add(lblBmiCategoryValueTxt);
+            pnlContent.Controls.Add(lblBmiValueTxt);
+            pnlContent.Controls.Add(lblWeightDiffValue);
+            pnlContent.Controls.Add(lblTargetWeightValue);
+            pnlContent.Controls.Add(lblBmiCategoryValue);
+            pnlContent.Controls.Add(lblBmiValue);
             pnlContent.Controls.Add(btnApproveAssignment);
             pnlContent.Controls.Add(btnUserWorkout);
             pnlContent.Controls.Add(btnAssignProgram);
@@ -135,10 +165,94 @@
             pnlContent.Name = "pnlContent";
             pnlContent.Size = new Size(882, 453);
             pnlContent.TabIndex = 4;
+            pnlContent.Paint += pnlContent_Paint;
+            // 
+            // btnStudentLogs
+            // 
+            btnStudentLogs.Location = new Point(603, 241);
+            btnStudentLogs.Name = "btnStudentLogs";
+            btnStudentLogs.Size = new Size(197, 70);
+            btnStudentLogs.TabIndex = 17;
+            btnStudentLogs.Text = "Student Logs";
+            btnStudentLogs.UseVisualStyleBackColor = true;
+            btnStudentLogs.Click += btnStudentLogs_Click;
+            // 
+            // lblWeightDiffValueTxt
+            // 
+            lblWeightDiffValueTxt.AutoSize = true;
+            lblWeightDiffValueTxt.Location = new Point(454, 113);
+            lblWeightDiffValueTxt.Name = "lblWeightDiffValueTxt";
+            lblWeightDiffValueTxt.Size = new Size(92, 20);
+            lblWeightDiffValueTxt.TabIndex = 16;
+            lblWeightDiffValueTxt.Text = "Weight Diff: ";
+            // 
+            // lblTargetWeightValueTxt
+            // 
+            lblTargetWeightValueTxt.AutoSize = true;
+            lblTargetWeightValueTxt.Location = new Point(454, 87);
+            lblTargetWeightValueTxt.Name = "lblTargetWeightValueTxt";
+            lblTargetWeightValueTxt.Size = new Size(108, 20);
+            lblTargetWeightValueTxt.TabIndex = 15;
+            lblTargetWeightValueTxt.Text = "Target Weight: ";
+            // 
+            // lblBmiCategoryValueTxt
+            // 
+            lblBmiCategoryValueTxt.AutoSize = true;
+            lblBmiCategoryValueTxt.Location = new Point(250, 113);
+            lblBmiCategoryValueTxt.Name = "lblBmiCategoryValueTxt";
+            lblBmiCategoryValueTxt.Size = new Size(106, 20);
+            lblBmiCategoryValueTxt.TabIndex = 14;
+            lblBmiCategoryValueTxt.Text = "BMI Category: ";
+            // 
+            // lblBmiValueTxt
+            // 
+            lblBmiValueTxt.AutoSize = true;
+            lblBmiValueTxt.Location = new Point(250, 91);
+            lblBmiValueTxt.Name = "lblBmiValueTxt";
+            lblBmiValueTxt.Size = new Size(42, 20);
+            lblBmiValueTxt.TabIndex = 13;
+            lblBmiValueTxt.Text = "BMI: ";
+            // 
+            // lblWeightDiffValue
+            // 
+            lblWeightDiffValue.AutoSize = true;
+            lblWeightDiffValue.Location = new Point(552, 113);
+            lblWeightDiffValue.Name = "lblWeightDiffValue";
+            lblWeightDiffValue.Size = new Size(34, 20);
+            lblWeightDiffValue.TabIndex = 12;
+            lblWeightDiffValue.Text = "Diff";
+            // 
+            // lblTargetWeightValue
+            // 
+            lblTargetWeightValue.AutoSize = true;
+            lblTargetWeightValue.Location = new Point(568, 87);
+            lblTargetWeightValue.Name = "lblTargetWeightValue";
+            lblTargetWeightValue.Size = new Size(56, 20);
+            lblTargetWeightValue.TabIndex = 11;
+            lblTargetWeightValue.Text = "Weight";
+            lblTargetWeightValue.Click += lblTargetWeightValue_Click;
+            // 
+            // lblBmiCategoryValue
+            // 
+            lblBmiCategoryValue.AutoSize = true;
+            lblBmiCategoryValue.Location = new Point(362, 113);
+            lblBmiCategoryValue.Name = "lblBmiCategoryValue";
+            lblBmiCategoryValue.Size = new Size(35, 20);
+            lblBmiCategoryValue.TabIndex = 10;
+            lblBmiCategoryValue.Text = "ctgr";
+            // 
+            // lblBmiValue
+            // 
+            lblBmiValue.AutoSize = true;
+            lblBmiValue.Location = new Point(298, 91);
+            lblBmiValue.Name = "lblBmiValue";
+            lblBmiValue.Size = new Size(42, 20);
+            lblBmiValue.TabIndex = 9;
+            lblBmiValue.Text = "BMI: ";
             // 
             // btnApproveAssignment
             // 
-            btnApproveAssignment.Location = new Point(472, 228);
+            btnApproveAssignment.Location = new Point(362, 241);
             btnApproveAssignment.Name = "btnApproveAssignment";
             btnApproveAssignment.Size = new Size(170, 81);
             btnApproveAssignment.TabIndex = 8;
@@ -148,7 +262,7 @@
             // 
             // btnUserWorkout
             // 
-            btnUserWorkout.Location = new Point(196, 228);
+            btnUserWorkout.Location = new Point(332, 339);
             btnUserWorkout.Name = "btnUserWorkout";
             btnUserWorkout.Size = new Size(176, 81);
             btnUserWorkout.TabIndex = 7;
@@ -158,7 +272,7 @@
             // 
             // btnAssignProgram
             // 
-            btnAssignProgram.Location = new Point(634, 323);
+            btnAssignProgram.Location = new Point(591, 317);
             btnAssignProgram.Name = "btnAssignProgram";
             btnAssignProgram.Size = new Size(220, 103);
             btnAssignProgram.TabIndex = 6;
@@ -168,7 +282,7 @@
             // 
             // btnManagePrograms
             // 
-            btnManagePrograms.Location = new Point(25, 333);
+            btnManagePrograms.Location = new Point(50, 333);
             btnManagePrograms.Name = "btnManagePrograms";
             btnManagePrograms.Size = new Size(220, 93);
             btnManagePrograms.TabIndex = 5;
@@ -178,9 +292,9 @@
             // 
             // btnManageWorkouts
             // 
-            btnManageWorkouts.Location = new Point(336, 102);
+            btnManageWorkouts.Location = new Point(77, 241);
             btnManageWorkouts.Name = "btnManageWorkouts";
-            btnManageWorkouts.Size = new Size(228, 120);
+            btnManageWorkouts.Size = new Size(180, 86);
             btnManageWorkouts.TabIndex = 4;
             btnManageWorkouts.Text = "Manage Workouts";
             btnManageWorkouts.UseVisualStyleBackColor = true;
@@ -188,9 +302,9 @@
             // 
             // btnApproveTrainers
             // 
-            btnApproveTrainers.Location = new Point(336, 323);
+            btnApproveTrainers.Location = new Point(312, 130);
             btnApproveTrainers.Name = "btnApproveTrainers";
-            btnApproveTrainers.Size = new Size(228, 108);
+            btnApproveTrainers.Size = new Size(234, 92);
             btnApproveTrainers.TabIndex = 3;
             btnApproveTrainers.Text = "Approve Trainers";
             btnApproveTrainers.UseVisualStyleBackColor = true;
@@ -237,6 +351,7 @@
         private Label lblSubTitle;
         private Panel pnlContent;
         private Label label3;
+        private Label lblTargetWeightValue;
         private Button btnApproveTrainers;
         private Button btnManageWorkouts;
         private Button btnManagePrograms;
@@ -244,5 +359,15 @@
         private Button btnUserWorkout;
         private Button btnApproveAssignment;
         private Button btnLogout;
+        private Button btnEditMyProfile;
+        private Label lblBmiValue;
+        private Label lblBmiCategoryValue;
+        private Label lblWeightDiffValue;
+        private Label label5;
+        private Label lblTargetWeightValueTxt;
+        private Label lblBmiCategoryValueTxt;
+        private Label lblBmiValueTxt;
+        private Button btnStudentLogs;
+        private Label lblWeightDiffValueTxt;
     }
 }

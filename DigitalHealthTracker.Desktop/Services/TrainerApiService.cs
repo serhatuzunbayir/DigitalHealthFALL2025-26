@@ -21,6 +21,14 @@ namespace DigitalHealthTracker.Desktop.Services
 			return trainers ?? new List<Trainer>();
 		}
 
+		// ✅ NEW: GET: api/Trainers/{id}
+		public async Task<Trainer?> GetByIdAsync(int id)
+		{
+			using var client = ApiClient.Create();
+			return await client.GetFromJsonAsync<Trainer>($"/api/Trainers/{id}");
+		}
+
+		// POST: api/Trainers (Admin add kaldırıldı, normalde kullanılmayacak)
 		public async Task<Trainer?> CreateAsync(Trainer trainer)
 		{
 			using var client = ApiClient.Create();

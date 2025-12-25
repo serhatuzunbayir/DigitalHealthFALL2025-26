@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             dgvUsers = new DataGridView();
-            btnAddUser = new Button();
             btnEditUser = new Button();
             btnDeleteUser = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvUsers).BeginInit();
@@ -49,20 +48,6 @@
             dgvUsers.Size = new Size(882, 350);
             dgvUsers.TabIndex = 0;
             dgvUsers.CellContentClick += dgvUsers_CellContentClick;
-            // 
-            // btnAddUser
-            // 
-            btnAddUser.BackColor = Color.Teal;
-            btnAddUser.FlatStyle = FlatStyle.Flat;
-            btnAddUser.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
-            btnAddUser.ForeColor = Color.WhiteSmoke;
-            btnAddUser.Location = new Point(220, 380);
-            btnAddUser.Name = "btnAddUser";
-            btnAddUser.Size = new Size(135, 50);
-            btnAddUser.TabIndex = 1;
-            btnAddUser.Text = "Add User";
-            btnAddUser.UseVisualStyleBackColor = false;
-            btnAddUser.Click += btnAddUser_Click;
             // 
             // btnEditUser
             // 
@@ -100,7 +85,6 @@
             ClientSize = new Size(882, 453);
             Controls.Add(btnDeleteUser);
             Controls.Add(btnEditUser);
-            Controls.Add(btnAddUser);
             Controls.Add(dgvUsers);
             Name = "UserListForm";
             StartPosition = FormStartPosition.CenterParent;
@@ -112,7 +96,6 @@
         #endregion
 
         private DataGridView dgvUsers;
-        private Button btnAddUser;
         private Button btnEditUser;
         private Button btnDeleteUser;
     }

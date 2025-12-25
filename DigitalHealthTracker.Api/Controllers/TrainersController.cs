@@ -48,16 +48,10 @@ namespace DigitalHealthTracker.Api.Controllers
 			return Ok(trainer);
 		}
 
-		// POST: api/Trainers
-		[HttpPost]
-		public async Task<ActionResult<Trainer>> Create(Trainer trainer)
-		{
-			_context.Trainers.Add(trainer);
-			await _context.SaveChangesAsync();
-			return Ok(trainer);
-		}
+		// ❌ ADMIN CREATE YOK (Register ile oluşuyor)
+		// [HttpPost] kaldırıldı
 
-		// PUT: api/Trainers/5  (route id esas)
+		// PUT: api/Trainers/5
 		[HttpPut("{id:int}")]
 		public async Task<IActionResult> Update(int id, Trainer trainer)
 		{
@@ -69,13 +63,16 @@ namespace DigitalHealthTracker.Api.Controllers
 			existing.Phone = trainer.Phone;
 			existing.Email = trainer.Email;
 			existing.BirthYear = trainer.BirthYear;
+
+			// Admin approve/unapprove edebilsin
 			existing.IsApproved = trainer.IsApproved;
 
+			// PasswordHash'a dokunma!
 			await _context.SaveChangesAsync();
 			return Ok(existing);
 		}
 
-		// PUT: api/Trainers/5/approve
+		// PUT: api/Trainers/5/approve (kalsın)
 		[HttpPut("{id:int}/approve")]
 		public async Task<IActionResult> Approve(int id)
 		{
