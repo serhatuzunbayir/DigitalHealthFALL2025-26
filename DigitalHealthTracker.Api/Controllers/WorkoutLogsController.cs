@@ -1,0 +1,39 @@
+﻿using DigitalHealthTracker.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace DigitalHealthTracker.Api.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class WorkoutLogsController : ControllerBase
+	{
+		private readonly AppDbContext _context;
+		public WorkoutLogsController(AppDbContext context) => _context = context;
+
+		// ✅ USER: tüm log geçmişi (programdaki hareketler tek tek)
+		// GET: /api/WorkoutLogs/user/10
+		[HttpGet("user/{userId:int}")]
+		public async Task<IActionResult> GetHistoryForUser(int userId)
+		{
+			var logs = await _context.WorkoutLogs
+				.Include(l => l.WorkoutProgram)
+				.Include(l => l.Workout)
+				.Where(l => l.UserId == userId)
+				.OrderByDescending(l => l.CompletedAt)
+				.Select(l => new
+				{
+					l.Id,
+					Program = l.WorkoutProgram.Title,
+					Workout = l.Workout.Name,
+					l.DayNo,
+					l.Sets,
+					l.Reps,
+					CompletedAt = l.CompletedAt.ToString("yyyy-MM-dd HH:mm")
+				})
+				.ToListAsync();
+
+			return Ok(logs);
+		}
+	}
+}

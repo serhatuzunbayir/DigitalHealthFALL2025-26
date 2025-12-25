@@ -1,30 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
-
-
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Desktop.Services;
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class UserListForm : Form
-    {
+	public partial class UserListForm : Form
+	{
 		public delegate void UserActionHandler(string message);
 		public event UserActionHandler? UserChanged;
+
+		private readonly UserApiService _userApi = new UserApiService();
 
 		public UserListForm()
 		{
 			InitializeComponent();
 			ConfigureGrid();
 			StyleGrid();
-			LoadUsers();
+		}
+
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadUsers();
 		}
 
 		private void ConfigureGrid()
@@ -36,23 +38,30 @@ namespace DigitalHealthTracker.Desktop
 			dgvUsers.AllowUserToAddRows = false;
 		}
 
-		private void LoadUsers()
-        {
-            using (var context = new AppDbContext())
-            {
-				// kayıtlar (id) sıralı gelsin diye OrderBy ekledim
-				var users = context.Users.OrderBy(u => u.Id).ToList();
+		private async Task LoadUsers()
+		{
+			try
+			{
+				var users = await _userApi.GetAllAsync();
 
-				// Önce DataSource’u sıfırla, sonra yeniden ata
 				dgvUsers.DataSource = null;
-				dgvUsers.DataSource = users;
+				dgvUsers.DataSource = users.OrderBy(u => u.Id).ToList();
 			}
-        }
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					"API bağlantı hatası:\n" + ex.Message,
+					"API Error",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error
+				);
+			}
+		}
 
 		private void StyleGrid()
 		{
 			dgvUsers.EnableHeadersVisualStyles = false;
-			dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 170, 170);  // Turkuaz
+			dgvUsers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 170, 170);
 			dgvUsers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
 			dgvUsers.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
 
@@ -70,23 +79,58 @@ namespace DigitalHealthTracker.Desktop
 		}
 
 		private void dgvUsers_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
+		{
+			// Bilerek boş — Designer bağlıysa patlamasın diye duruyor
+		}
 
-        }
+		private async void btnEditUser_Click(object sender, EventArgs e)
+		{
+			var selectedUser = GetSelectedUser();
 
-        private void btnEditUser_Click(object sender, EventArgs e)
-        {
-			if (dgvUsers.CurrentRow == null)
+			if (selectedUser == null)
 			{
 				MessageBox.Show("Please select a user to edit...");
 				return;
 			}
 
+			try
+			{
+				using (var frm = new UserEditForm(selectedUser))
+				{
+					var result = frm.ShowDialog();
+
+					if (result != DialogResult.OK)
+						return;
+
+					// 🔴 ASIL OLAY BURASI
+					await _userApi.UpdateAsync(selectedUser.Id, frm.EditedUser);
+
+					// listeyi yenile
+					await LoadUsers();
+
+					UserChanged?.Invoke(
+						$"User '{selectedUser.Name} {selectedUser.Surname}' was updated."
+					);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					ex.Message,
+					"Edit Error",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error
+				);
+			}
+		}
+
+		private async void btnDeleteUser_Click(object sender, EventArgs e)
+		{
 			var selectedUser = GetSelectedUser();
 
 			if (selectedUser == null)
 			{
-				MessageBox.Show("Selected user is invalid...");
+				MessageBox.Show("Please select a user to edit...");
 				return;
 			}
 
@@ -98,9 +142,8 @@ namespace DigitalHealthTracker.Desktop
 
 					if (result == DialogResult.OK)
 					{
-						// Güncellemeden sonra listeyi yenile
-						LoadUsers();
-						//El Yapımı Event
+						await _userApi.UpdateAsync(selectedUser.Id, frm.EditedUser);
+						await LoadUsers();
 						UserChanged?.Invoke($"User '{selectedUser.Name} {selectedUser.Surname}' was updated.");
 					}
 				}
@@ -112,64 +155,8 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-        private void btnDeleteUser_Click(object sender, EventArgs e)
-        {
-
-            if(dgvUsers.CurrentRow == null)
-            {
-                MessageBox.Show("Please select a user to delete...");
-                return;
-            }
-
-
-			//kullanıcıyı seçtik
-			var selectedUser = GetSelectedUser();
-
-            if(selectedUser == null)
-            {
-                MessageBox.Show("Selected user is invalid...");
-                return;
-			}
-
-
-            //Son Emin misin onayı
-			var result = MessageBox.Show($"Are you sure to delete user named: '{selectedUser.Name} {selectedUser.Surname}' ?","Delete Confirmation",MessageBoxButtons.YesNo,MessageBoxIcon.Question);
-            if(result != DialogResult.Yes)
-            {
-                MessageBox.Show("User deletion cancelled...");
-				return;
-            }
-
-			try
-			{
-				//DataBey'den kullanıcıyı varsa sil
-				using (var context = new AppDbContext())
-				{
-					var user = context.Users.SingleOrDefault(u => u.Id == selectedUser.Id);
-
-					if (user == null)
-					{
-						MessageBox.Show("Kullanıcı veritabanında bulunamadı.");
-						return;
-					}
-
-					context.Users.Remove(user);
-					context.SaveChanges();
-				}
-
-				LoadUsers(); //  Değşiklikten sonra DB'i tekrar yükle..
-				//El Yapımı Event
-				UserChanged?.Invoke($"User '{selectedUser.Name} {selectedUser.Surname}' deleted.");
-
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.ToString(), "Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-
-		private void btnAddUser_Click(object sender, EventArgs e)
-        {
+		private async void btnAddUser_Click(object sender, EventArgs e)
+		{
 			try
 			{
 				using (var frm = new UserEditForm())
@@ -178,9 +165,8 @@ namespace DigitalHealthTracker.Desktop
 
 					if (result == DialogResult.OK)
 					{
-						LoadUsers();
-
-						//El Yapımı Event
+						await _userApi.CreateAsync(frm.EditedUser);
+						await LoadUsers();
 						UserChanged?.Invoke("A new user was added.");
 					}
 				}
@@ -191,5 +177,5 @@ namespace DigitalHealthTracker.Desktop
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-    }
+	}
 }

@@ -1,28 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 using System.Linq;
-using DigitalHealthTracker.Data;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Desktop.Services;
 
 namespace DigitalHealthTracker.Desktop
 {
-
-    public partial class TrainerListForm : Form
-    {
-
+	public partial class TrainerListForm : Form
+	{
 		public delegate void TrainerActionHandler(string message);
 		public event TrainerActionHandler? TrainerChanged;
+
+		private readonly TrainerApiService _trainerApi = new TrainerApiService();
+
 		public TrainerListForm()
-        {
-            InitializeComponent();
+		{
+			InitializeComponent();
 			ConfigureGrid();
 			StyleGrid();
-			LoadTrainers();
+		}
+
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadTrainers();
 		}
 
 		private void ConfigureGrid()
@@ -34,24 +37,24 @@ namespace DigitalHealthTracker.Desktop
 			dgvTrainers.AllowUserToAddRows = false;
 		}
 
-
-		private void LoadTrainers()
+		private async Task LoadTrainers()
 		{
-			using (var context = new AppDbContext())
+			try
 			{
-				var trainers = context.Trainers
-									  .OrderBy(t => t.Id)
-									  .ToList();
-
+				var trainers = await _trainerApi.GetAllAsync();
 				dgvTrainers.DataSource = null;
-				dgvTrainers.DataSource = trainers;
+				dgvTrainers.DataSource = trainers.OrderBy(t => t.Id).ToList();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("API Trainer Load Error: " + ex.Message);
 			}
 		}
 
 		private void StyleGrid()
 		{
 			dgvTrainers.EnableHeadersVisualStyles = false;
-			dgvTrainers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 170, 170);  // Turkuaz
+			dgvTrainers.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 170, 170);
 			dgvTrainers.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
 			dgvTrainers.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
 
@@ -62,27 +65,21 @@ namespace DigitalHealthTracker.Desktop
 
 		private Trainer? GetSelectedTrainer()
 		{
-			if (dgvTrainers.CurrentRow == null)
-				return null;
-
-			return dgvTrainers.CurrentRow.DataBoundItem as Trainer;
+			return dgvTrainers.CurrentRow?.DataBoundItem as Trainer;
 		}
 
-		private void btnAddTrainer_Click(object sender, EventArgs e)
-        {
+		private async void btnAddTrainer_Click(object sender, EventArgs e)
+		{
 			try
 			{
 				using (var frm = new TrainerEditForm())
 				{
 					var result = frm.ShowDialog();
+					if (result != DialogResult.OK) return;
 
-					if (result == DialogResult.OK)
-					{
-						LoadTrainers();
-						//El yapımı event
-						TrainerChanged?.Invoke("A new trainer was added.");
-
-					}
+					await _trainerApi.CreateAsync(frm.EditedTrainer);
+					await LoadTrainers();
+					TrainerChanged?.Invoke("A new trainer was added.");
 				}
 			}
 			catch (Exception ex)
@@ -92,10 +89,9 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-        private void btnEditTrainer_Click(object sender, EventArgs e)
-        {
+		private async void btnEditTrainer_Click(object sender, EventArgs e)
+		{
 			var selectedTrainer = GetSelectedTrainer();
-
 			if (selectedTrainer == null)
 			{
 				MessageBox.Show("Please select a trainer to edit...");
@@ -107,13 +103,11 @@ namespace DigitalHealthTracker.Desktop
 				using (var frm = new TrainerEditForm(selectedTrainer))
 				{
 					var result = frm.ShowDialog();
+					if (result != DialogResult.OK) return;
 
-					if (result == DialogResult.OK)
-					{
-						LoadTrainers();
-						//El Yapımı Event
-						TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was updated.");
-					}
+					await _trainerApi.UpdateAsync(selectedTrainer.Id, frm.EditedTrainer);
+					await LoadTrainers();
+					TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was updated.");
 				}
 			}
 			catch (Exception ex)
@@ -123,10 +117,9 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-        private void btnDeleteTrainer_Click(object sender, EventArgs e)
-        {
+		private async void btnDeleteTrainer_Click(object sender, EventArgs e)
+		{
 			var selectedTrainer = GetSelectedTrainer();
-
 			if (selectedTrainer == null)
 			{
 				MessageBox.Show("Please select a trainer to delete...");
@@ -139,30 +132,13 @@ namespace DigitalHealthTracker.Desktop
 				MessageBoxButtons.YesNo,
 				MessageBoxIcon.Question);
 
-			if (result != DialogResult.Yes)
-				return;
+			if (result != DialogResult.Yes) return;
 
 			try
 			{
-				using (var context = new AppDbContext())
-				{
-					var trainer = context.Trainers
-										 .SingleOrDefault(t => t.Id == selectedTrainer.Id);
-
-					if (trainer == null)
-					{
-						MessageBox.Show("Trainer not found in database.");
-						return;
-					}
-
-					context.Trainers.Remove(trainer);
-					context.SaveChanges();
-				}
-
-				LoadTrainers();
-				//El Yapımı Event
+				await _trainerApi.DeleteAsync(selectedTrainer.Id);
+				await LoadTrainers();
 				TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was deleted.");
-
 			}
 			catch (Exception ex)
 			{
@@ -170,5 +146,5 @@ namespace DigitalHealthTracker.Desktop
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-    }
+	}
 }

@@ -1,131 +1,100 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
+﻿using DigitalHealthTracker.Desktop.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class UserAssignmentsForm : Form
-    {
-        public UserAssignmentsForm()
-        {
-            InitializeComponent();
-            ConfigureGrid();
-            LoadPendingAssignments();
-        }
+	public partial class UserAssignmentsForm : Form
+	{
+		private readonly UserAssignmentsApiService _api = new UserAssignmentsApiService();
 
-        private void ConfigureGrid()
-        {
-            dgvPending.AutoGenerateColumns = true;
-            dgvPending.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvPending.MultiSelect = false;
-            dgvPending.ReadOnly = true;
-            dgvPending.AllowUserToAddRows = false;
-        }
+		public UserAssignmentsForm()
+		{
+			InitializeComponent();
+			ConfigureGrid();
+		}
 
-        private void LoadPendingAssignments()
-        {
-            if (Session.Role != AppRole.User || Session.UserId == null)
-            {
-                MessageBox.Show("Please login as User.");
-                dgvPending.DataSource = null;
-                return;
-            }
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadPendingAssignments();
+		}
 
-            using (var context = new AppDbContext())
-            {
-                int userId = Session.UserId.Value;
+		private void ConfigureGrid()
+		{
+			dgvPending.AutoGenerateColumns = true;
+			dgvPending.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+			dgvPending.MultiSelect = false;
+			dgvPending.ReadOnly = true;
+			dgvPending.AllowUserToAddRows = false;
+		}
 
-                var list = context.AssignedPrograms
-                    .Include(a => a.Trainer)
-                    .Include(a => a.WorkoutProgram)
-                    .Where(a => a.UserId == userId && a.Status == AssignmentStatus.Pending)
-                    .OrderByDescending(a => a.AssignedAt)
-                    .Select(a => new
-                    {
-                        a.Id,
-                        Program = a.WorkoutProgram.Title,
-                        Trainer = a.Trainer.Name + " " + a.Trainer.Surname,
-                        AssignedAt = a.AssignedAt.ToString("yyyy-MM-dd HH:mm")
-                    })
-                    .ToList();
+		private async Task LoadPendingAssignments()
+		{
+			if (Session.Role != AppRole.User || Session.UserId == null)
+			{
+				MessageBox.Show("Please login as User.");
+				dgvPending.DataSource = null;
+				return;
+			}
 
-                dgvPending.DataSource = null;
-                dgvPending.DataSource = list;
+			try
+			{
+				int userId = Session.UserId.Value;
 
-                if (dgvPending.Columns["Id"] != null)
-                    dgvPending.Columns["Id"].Visible = false;
-            }
-        }
+				var list = await _api.GetPendingAsync(userId);
 
-        private void btnApproveSelected_Click(object sender, EventArgs e)
-        {
-            if (dgvPending.CurrentRow == null)
-            {
-                MessageBox.Show("Please select an assignment.");
-                return;
-            }
+				dgvPending.DataSource = null;
+				dgvPending.DataSource = list;
 
-            int assignmentId = Convert.ToInt32(dgvPending.CurrentRow.Cells["Id"].Value);
+				if (dgvPending.Columns["Id"] != null)
+					dgvPending.Columns["Id"].Visible = false;
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Load Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 
-            try
-            {
-                using (var context = new AppDbContext())
-                {
-                    int userId = Session.UserId!.Value;
 
-                    var assignment = context.AssignedPrograms
-                        .SingleOrDefault(a => a.Id == assignmentId);
+		private async void btnApproveSelected_Click(object sender, EventArgs e)
+		{
+			if (Session.Role != AppRole.User || Session.UserId == null)
+			{
+				MessageBox.Show("Please login as User.");
+				return;
+			}
 
-                    if (assignment == null)
-                    {
-                        MessageBox.Show("Assignment not found.");
-                        return;
-                    }
+			if (dgvPending.CurrentRow == null)
+			{
+				MessageBox.Show("Please select an assignment.");
+				return;
+			}
 
-                    // ✅ güvenlik: user sadece kendi assignment'ını approve edebilsin
-                    if (assignment.UserId != userId)
-                    {
-                        MessageBox.Show("You can only approve your own assignments.");
-                        return;
-                    }
+			int assignmentId = Convert.ToInt32(dgvPending.CurrentRow.Cells["Id"].Value);
 
-                    if (assignment.Status != AssignmentStatus.Pending)
-                    {
-                        MessageBox.Show("Only Pending assignments can be approved.");
-                        return;
-                    }
+			try
+			{
+				await _api.ApproveAsync(assignmentId, Session.UserId.Value);
 
-                    assignment.Status = AssignmentStatus.Active;
-                    assignment.ApprovedAt = DateTime.Now;
+				MessageBox.Show("Approved! Status is now ACTIVE.");
+				await LoadPendingAssignments(); 
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Approve Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 
-                    context.SaveChanges();
-                }
+		private async void btnRefresh_Click(object sender, EventArgs e)
+		{
+			await LoadPendingAssignments();
+		}
 
-                MessageBox.Show("Approved! Status is now ACTIVE.");
-                LoadPendingAssignments();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "Approve Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-            LoadPendingAssignments();
-        }
-
-        private void btnClose_Click(object sender, EventArgs e)
-        {
+		private void btnClose_Click(object sender, EventArgs e)
+		{
 			Close();
 		}
 	}

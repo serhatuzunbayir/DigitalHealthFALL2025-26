@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace DigitalHealthTracker.Data.Entities
 {
-    public class WorkoutLog
-    {
+	public class WorkoutLog
+	{
 		public int Id { get; set; }
 
 		public int UserId { get; set; }
@@ -19,6 +17,10 @@ namespace DigitalHealthTracker.Data.Entities
 
 		public int WorkoutId { get; set; }
 		public Workout Workout { get; set; } = null!;
+
+		// ✅ Yeni: assignment bazlı takip
+		public int AssignedProgramId { get; set; }
+		public AssignedProgram AssignedProgram { get; set; } = null!;
 
 		public int DayNo { get; set; }
 		public int Sets { get; set; }

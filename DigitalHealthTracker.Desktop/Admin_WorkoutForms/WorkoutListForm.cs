@@ -1,11 +1,9 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
+﻿using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Desktop.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DigitalHealthTracker.Desktop
@@ -15,12 +13,19 @@ namespace DigitalHealthTracker.Desktop
 		public delegate void WorkoutActionHandler(string message);
 		public event WorkoutActionHandler? WorkoutChanged;
 
+		private readonly WorkoutApiService _workoutApi = new WorkoutApiService();
+
 		public WorkoutListForm()
 		{
 			InitializeComponent();
 			ConfigureGrid();
 			StyleGrid();
-			LoadWorkouts();
+		}
+
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadWorkouts();
 		}
 
 		private void ConfigureGrid()
@@ -44,40 +49,37 @@ namespace DigitalHealthTracker.Desktop
 			dgvWorkouts.DefaultCellStyle.SelectionForeColor = Color.White;
 		}
 
-		private void LoadWorkouts()
+		private async Task LoadWorkouts()
 		{
-			using (var context = new AppDbContext())
+			try
 			{
-				var workouts = context.Workouts
-					.OrderBy(w => w.Id)
-					.ToList();
+				var workouts = await _workoutApi.GetAllAsync();
 
 				dgvWorkouts.DataSource = null;
-				dgvWorkouts.DataSource = workouts;
+				dgvWorkouts.DataSource = workouts.OrderBy(w => w.Id).ToList();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("API Workout Load Error: " + ex.Message);
 			}
 		}
 
 		private Workout? GetSelectedWorkout()
 		{
-			if (dgvWorkouts.CurrentRow == null)
-				return null;
-
-			return dgvWorkouts.CurrentRow.DataBoundItem as Workout;
+			return dgvWorkouts.CurrentRow?.DataBoundItem as Workout;
 		}
 
-		private void btnAdd_Click(object sender, EventArgs e)
+		private async void btnAdd_Click(object sender, EventArgs e)
 		{
 			try
 			{
 				using (var frm = new WorkoutEditForm())
 				{
-					var result = frm.ShowDialog();
+					if (frm.ShowDialog() != DialogResult.OK) return;
 
-					if (result == DialogResult.OK)
-					{
-						LoadWorkouts();
-						WorkoutChanged?.Invoke("A new workout was added.");
-					}
+					await _workoutApi.CreateAsync(frm.EditedWorkout);
+					await LoadWorkouts();
+					WorkoutChanged?.Invoke("A new workout was added.");
 				}
 			}
 			catch (Exception ex)
@@ -87,7 +89,7 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-		private void btnEdit_Click(object sender, EventArgs e)
+		private async void btnEdit_Click(object sender, EventArgs e)
 		{
 			var selectedWorkout = GetSelectedWorkout();
 
@@ -101,13 +103,11 @@ namespace DigitalHealthTracker.Desktop
 			{
 				using (var frm = new WorkoutEditForm(selectedWorkout))
 				{
-					var result = frm.ShowDialog();
+					if (frm.ShowDialog() != DialogResult.OK) return;
 
-					if (result == DialogResult.OK)
-					{
-						LoadWorkouts();
-						WorkoutChanged?.Invoke($"Workout '{selectedWorkout.Name}' was updated.");
-					}
+					await _workoutApi.UpdateAsync(selectedWorkout.Id, frm.EditedWorkout);
+					await LoadWorkouts();
+					WorkoutChanged?.Invoke($"Workout '{selectedWorkout.Name}' was updated.");
 				}
 			}
 			catch (Exception ex)
@@ -117,7 +117,7 @@ namespace DigitalHealthTracker.Desktop
 			}
 		}
 
-		private void btnDelete_Click(object sender, EventArgs e)
+		private async void btnDelete_Click(object sender, EventArgs e)
 		{
 			var selectedWorkout = GetSelectedWorkout();
 
@@ -138,22 +138,8 @@ namespace DigitalHealthTracker.Desktop
 
 			try
 			{
-				using (var context = new AppDbContext())
-				{
-					var workout = context.Workouts
-						.SingleOrDefault(w => w.Id == selectedWorkout.Id);
-
-					if (workout == null)
-					{
-						MessageBox.Show("Workout not found in database.");
-						return;
-					}
-
-					context.Workouts.Remove(workout);
-					context.SaveChanges();
-				}
-
-				LoadWorkouts();
+				await _workoutApi.DeleteAsync(selectedWorkout.Id);
+				await LoadWorkouts();
 				WorkoutChanged?.Invoke($"Workout '{selectedWorkout.Name}' was deleted.");
 			}
 			catch (Exception ex)

@@ -1,22 +1,17 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic.ApplicationServices;
+﻿using DigitalHealthTracker.Desktop.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class AssignProgramForm : Form
-    {
-
+	public partial class AssignProgramForm : Form
+	{
+		private readonly UserLookupApiService _userLookupApi = new UserLookupApiService();
+		private readonly WorkoutProgramApiService _programApi = new WorkoutProgramApiService();
+		private readonly AssignedProgramApiService _assignedApi = new AssignedProgramApiService();
 
 		public AssignProgramForm()
 		{
@@ -24,13 +19,18 @@ namespace DigitalHealthTracker.Desktop
 
 			ConfigureGrid();
 			StyleGrid();
+		}
 
-			// Trainer ekranında user approve işi yok (eğer buton varsa)
-			// btnApprove.Visible = false;
+		// Designer Load event’i buna bağlı olabilir diye ekliyoruz
+		private async void AssignProgramForm_Load(object sender, EventArgs e)
+		{
+			await LoadAll();
+		}
 
-			LoadUsers();
-			LoadProgramsForLoggedInTrainer();
-			LoadAssignmentsForLoggedInTrainer();
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadAll();
 		}
 
 		private void ConfigureGrid()
@@ -54,7 +54,6 @@ namespace DigitalHealthTracker.Desktop
 			dgvAssignments.DefaultCellStyle.SelectionForeColor = Color.White;
 		}
 
-		// ✅ TrainerId artık Session'dan gelir
 		private int? GetLoggedInTrainerId()
 		{
 			if (Session.Role != AppRole.Trainer || Session.TrainerId == null)
@@ -75,26 +74,22 @@ namespace DigitalHealthTracker.Desktop
 			return (int)cmbPrograms.SelectedValue;
 		}
 
-		private void LoadUsers()
+		private async Task LoadAll()
 		{
-			using (var context = new AppDbContext())
-			{
-				var users = context.Users
-					.OrderBy(u => u.Id)
-					.Select(u => new
-					{
-						u.Id,
-						FullName = u.Name + " " + u.Surname + " (" + u.Phone + ")"
-					})
-					.ToList();
-
-				cmbUsers.DataSource = users;
-				cmbUsers.DisplayMember = "FullName";
-				cmbUsers.ValueMember = "Id";
-			}
+			await LoadUsers();
+			await LoadProgramsForLoggedInTrainer();
+			await LoadAssignmentsForLoggedInTrainer();
 		}
 
-		private void LoadProgramsForLoggedInTrainer()
+		private async Task LoadUsers()
+		{
+			var users = await _userLookupApi.GetLookupAsync();
+			cmbUsers.DataSource = users;
+			cmbUsers.DisplayMember = "FullName";
+			cmbUsers.ValueMember = "Id";
+		}
+
+		private async Task LoadProgramsForLoggedInTrainer()
 		{
 			var trainerId = GetLoggedInTrainerId();
 			if (trainerId == null)
@@ -104,25 +99,14 @@ namespace DigitalHealthTracker.Desktop
 				return;
 			}
 
-			using (var context = new AppDbContext())
-			{
-				var programs = context.WorkoutPrograms
-					.Where(p => p.TrainerId == trainerId.Value)
-					.OrderBy(p => p.Id)
-					.Select(p => new
-					{
-						p.Id,
-						p.Title
-					})
-					.ToList();
+			var programs = await _programApi.GetByTrainerAsync(trainerId.Value);
 
-				cmbPrograms.DataSource = programs;
-				cmbPrograms.DisplayMember = "Title";
-				cmbPrograms.ValueMember = "Id";
-			}
+			cmbPrograms.DataSource = programs;
+			cmbPrograms.DisplayMember = "Title";
+			cmbPrograms.ValueMember = "Id";
 		}
 
-		private void LoadAssignmentsForLoggedInTrainer()
+		private async Task LoadAssignmentsForLoggedInTrainer()
 		{
 			var trainerId = GetLoggedInTrainerId();
 			if (trainerId == null)
@@ -131,119 +115,53 @@ namespace DigitalHealthTracker.Desktop
 				return;
 			}
 
-			using (var context = new AppDbContext())
-			{
-				var list = context.AssignedPrograms
-					.Include(a => a.User)
-					.Include(a => a.WorkoutProgram)
-					.Where(a => a.TrainerId == trainerId.Value)
-					.OrderByDescending(a => a.AssignedAt)
-					.Select(a => new
-					{
-						a.Id,
-						User = a.User.Name + " " + a.User.Surname,
-						Program = a.WorkoutProgram.Title,
-						Status = a.Status.ToString(),
-						AssignedAt = a.AssignedAt.ToString("yyyy-MM-dd HH:mm"),
-						ApprovedAt = a.ApprovedAt.HasValue ? a.ApprovedAt.Value.ToString("yyyy-MM-dd HH:mm") : ""
-					})
-					.ToList();
+			var list = await _assignedApi.GetForTrainerAsync(trainerId.Value);
 
-				dgvAssignments.DataSource = null;
-				dgvAssignments.DataSource = list;
+			dgvAssignments.DataSource = null;
+			dgvAssignments.DataSource = list;
 
-				if (dgvAssignments.Columns["Id"] != null)
-					dgvAssignments.Columns["Id"].Visible = false;
-			}
+			if (dgvAssignments.Columns["Id"] != null)
+				dgvAssignments.Columns["Id"].Visible = false;
 		}
 
-
-		// Buttons
-		private void btnAssign_Click(object sender, EventArgs e)
+		private async void btnAssign_Click(object sender, EventArgs e)
 		{
 			var trainerId = GetLoggedInTrainerId();
 			var userId = GetSelectedUserId();
 			var programId = GetSelectedProgramId();
 
-			if (trainerId == null)
-			{
-				MessageBox.Show("Please login as Trainer.");
-				return;
-			}
-
-			if (userId == null)
-			{
-				MessageBox.Show("Please select a user.");
-				return;
-			}
-
-			if (programId == null)
-			{
-				MessageBox.Show("Please select a program.");
-				return;
-			}
+			if (trainerId == null) { MessageBox.Show("Please login as Trainer."); return; }
+			if (userId == null) { MessageBox.Show("Please select a user."); return; }
+			if (programId == null) { MessageBox.Show("Please select a program."); return; }
 
 			try
 			{
-				using (var context = new AppDbContext())
-				{
-					// ✅ ekstra güvenlik: seçilen program gerçekten bu trainer'a ait mi?
-					bool ownsProgram = context.WorkoutPrograms.Any(p => p.Id == programId.Value && p.TrainerId == trainerId.Value);
-					if (!ownsProgram)
-					{
-						MessageBox.Show("You can only assign your own programs.");
-						return;
-					}
-
-					// Aynı user'a aynı program tamamlanmadan atanmasın (opsiyonel)
-					bool exists = context.AssignedPrograms.Any(a =>
-						a.UserId == userId.Value &&
-						a.WorkoutProgramId == programId.Value &&
-						a.Status != AssignmentStatus.Completed);
-
-					if (exists)
-					{
-						MessageBox.Show("This program is already assigned to the user (not completed yet).");
-						return;
-					}
-
-					var assignment = new AssignedProgram
-					{
-						TrainerId = trainerId.Value,
-						UserId = userId.Value,
-						WorkoutProgramId = programId.Value,
-						Status = AssignmentStatus.Pending,
-						AssignedAt = DateTime.Now
-					};
-
-					context.AssignedPrograms.Add(assignment);
-					context.SaveChanges();
-				}
+				await _assignedApi.AssignAsync(trainerId.Value, userId.Value, programId.Value);
 
 				MessageBox.Show("Program assigned successfully. (Status: Pending)");
-				LoadAssignmentsForLoggedInTrainer();
+				await LoadAssignmentsForLoggedInTrainer();
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Assign Program Error",
+				MessageBox.Show(ex.Message, "Assign Program Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 
-        private void btnRefresh_Click(object sender, EventArgs e)
-        {
-			LoadProgramsForLoggedInTrainer();
-			LoadAssignmentsForLoggedInTrainer();
+		private async void btnRefresh_Click(object sender, EventArgs e)
+		{
+			await LoadProgramsForLoggedInTrainer();
+			await LoadAssignmentsForLoggedInTrainer();
 		}
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
 
-		private void btnDeleteAssignment_Click(object sender, EventArgs e)
-        {
+		private async void btnDeleteAssignment_Click(object sender, EventArgs e)
+		{
 			if (dgvAssignments.CurrentRow == null)
 			{
 				MessageBox.Show("Please select an assignment.");
@@ -258,43 +176,25 @@ namespace DigitalHealthTracker.Desktop
 			if (confirm != DialogResult.Yes)
 				return;
 
+			var trainerId = GetLoggedInTrainerId();
+			if (trainerId == null)
+			{
+				MessageBox.Show("Please login as Trainer.");
+				return;
+			}
+
 			try
 			{
-				using (var context = new AppDbContext())
-				{
-					var trainerId = GetLoggedInTrainerId();
-					if (trainerId == null)
-					{
-						MessageBox.Show("Please login as Trainer.");
-						return;
-					}
-
-					var assignment = context.AssignedPrograms.SingleOrDefault(a => a.Id == assignmentId);
-					if (assignment == null)
-					{
-						MessageBox.Show("Assignment not found.");
-						return;
-					}
-
-					// ✅ Trainer sadece kendi assignment'ını silebilsin
-					if (assignment.TrainerId != trainerId.Value)
-					{
-						MessageBox.Show("You can only delete your own assignments.");
-						return;
-					}
-
-					context.AssignedPrograms.Remove(assignment);
-					context.SaveChanges();
-				}
+				await _assignedApi.DeleteAsync(assignmentId, trainerId.Value);
 
 				MessageBox.Show("Assignment deleted.");
-				LoadAssignmentsForLoggedInTrainer();
+				await LoadAssignmentsForLoggedInTrainer();
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Delete Error",
+				MessageBox.Show(ex.Message, "Delete Error",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-    }
+	}
 }

@@ -87,7 +87,6 @@
             Controls.Add(dgvTrainers);
             Name = "TrainerApprovalForm";
             Text = "Trainer Approval";
-            Load += TrainerApprovalForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvTrainers).EndInit();
             ResumeLayout(false);
         }

@@ -1,26 +1,23 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
+﻿using DigitalHealthTracker.Data.Entities;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class UserEditForm : Form
-    {
+	public partial class UserEditForm : Form
+	{
 		private int? userIdEdit;
+		private User _user = new User();
 
-		// Add için constructor
+		public User EditedUser => _user;
+
+		// Add
 		public UserEditForm()
-        {
-            InitializeComponent();
-        }
+		{
+			InitializeComponent();
+		}
 
-        // Edit için constructor
+		// Edit
 		public UserEditForm(User tempUser) : this()
 		{
 			userIdEdit = tempUser.Id;
@@ -36,20 +33,18 @@ namespace DigitalHealthTracker.Desktop
 		}
 
 		private void btnSave_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtSurname.Text))
-            {
-                MessageBox.Show("Name and Surname is required.");
-                return;
-            }
+		{
+			if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtSurname.Text))
+			{
+				MessageBox.Show("Name and Surname is required.");
+				return;
+			}
 			if (string.IsNullOrWhiteSpace(txtPhone.Text))
 			{
 				MessageBox.Show("Phone number is required.");
 				return;
 			}
 
-
-			// Doğum yılı / boy / kilo kontrollü aldık
 			if (string.IsNullOrWhiteSpace(txtBirthYear.Text))
 			{
 				MessageBox.Show("Birth Year is required.");
@@ -78,60 +73,33 @@ namespace DigitalHealthTracker.Desktop
 				MessageBox.Show("Weight is required.");
 				return;
 			}
-
 			if (!double.TryParse(txtWeightKg.Text, out double weightKg) || weightKg <= 0)
 			{
 				MessageBox.Show("Please enter a valid weight in kg (> 0).");
 				return;
 			}
 
-
-			// user'ı formdan alıp initialize ettik
-			using (var context = new AppDbContext())
+			_user = new User
 			{
-				User user;
+				Id = userIdEdit ?? 0,
+				Name = txtName.Text.Trim(),
+				Surname = txtSurname.Text.Trim(),
+				Email = txtEmail.Text.Trim(),
+				Phone = txtPhone.Text.Trim(),
+				MedicalRecord = txtMedicalRecord.Text ?? "",
+				BirthYear = birthYear,
+				HeightCm = heightCm,
+				WeightKg = weightKg
+			};
 
-				if (userIdEdit == null)
-				{
-					// ADD way
-					user = new User();
-					context.Users.Add(user);
-				}
-				else
-				{
-					// EDIT way
-					user = context.Users.Find(userIdEdit.Value);
-
-					if (user == null)
-					{
-						MessageBox.Show("User not found in DataBase.");
-						return;
-					}
-
-					
-				}
-
-				user.Name = txtName.Text;
-				user.Surname = txtSurname.Text;
-				user.Email = txtEmail.Text;
-				user.Phone = txtPhone.Text;
-				user.MedicalRecord = txtMedicalRecord.Text ?? "";
-				user.BirthYear = birthYear;
-				user.HeightCm = heightCm;
-				user.WeightKg = weightKg;
-
-				context.SaveChanges();
-				
-
-			}
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
-    }
+	}
 }

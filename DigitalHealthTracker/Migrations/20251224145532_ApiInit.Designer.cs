@@ -3,6 +3,7 @@ using System;
 using DigitalHealthTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DigitalHealthTracker.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251224145532_ApiInit")]
+    partial class ApiInit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.1");
@@ -186,9 +189,6 @@ namespace DigitalHealthTracker.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AssignedProgramId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("TEXT");
 
@@ -214,8 +214,6 @@ namespace DigitalHealthTracker.Data.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AssignedProgramId");
 
                     b.HasIndex("TrainerId");
 
@@ -319,12 +317,6 @@ namespace DigitalHealthTracker.Data.Migrations
 
             modelBuilder.Entity("DigitalHealthTracker.Data.Entities.WorkoutLog", b =>
                 {
-                    b.HasOne("DigitalHealthTracker.Data.Entities.AssignedProgram", "AssignedProgram")
-                        .WithMany()
-                        .HasForeignKey("AssignedProgramId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DigitalHealthTracker.Data.Entities.Trainer", "Trainer")
                         .WithMany()
                         .HasForeignKey("TrainerId")
@@ -348,8 +340,6 @@ namespace DigitalHealthTracker.Data.Migrations
                         .HasForeignKey("WorkoutProgramId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("AssignedProgram");
 
                     b.Navigation("Trainer");
 

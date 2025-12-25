@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="DigitalHealthTracker.Api/DigitalHealthTracker.Api.csproj" Id="678a358d-edd8-4de1-8419-c8d6037439ed" />
   <Project Path="DigitalHealthTracker.Desktop/DigitalHealthTracker.Desktop.csproj" Id="c30669a4-f55e-434b-aab9-6dd71bb5294e" />
   <Project Path="DigitalHealthTracker/DigitalHealthTracker.Data.csproj" />
 </Solution>

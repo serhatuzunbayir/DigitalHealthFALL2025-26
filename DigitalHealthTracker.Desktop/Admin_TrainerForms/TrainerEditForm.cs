@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using DigitalHealthTracker.Data;
 using DigitalHealthTracker.Data.Entities;
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class TrainerEditForm : Form
-    {
-        private int? trainerIdEdit;
-        public TrainerEditForm()
-        {
-            InitializeComponent();
-        }
+	public partial class TrainerEditForm : Form
+	{
+		private int? trainerIdEdit;
+		private Trainer _trainer = new Trainer();
+
+		public Trainer EditedTrainer => _trainer;
+
+		public TrainerEditForm()
+		{
+			InitializeComponent();
+		}
 
 		public TrainerEditForm(Trainer tempTrainer) : this()
 		{
@@ -31,9 +29,8 @@ namespace DigitalHealthTracker.Desktop
 		}
 
 		private void btnSave_Click(object sender, EventArgs e)
-        {
-			if (string.IsNullOrWhiteSpace(txtName.Text) ||
-				string.IsNullOrWhiteSpace(txtSurname.Text))
+		{
+			if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtSurname.Text))
 			{
 				MessageBox.Show("Name and Surname are required.");
 				return;
@@ -58,49 +55,25 @@ namespace DigitalHealthTracker.Desktop
 				return;
 			}
 
-			using (var context = new AppDbContext())
+			_trainer = new Trainer
 			{
-				Trainer trainer;
+				Id = trainerIdEdit ?? 0,
+				Name = txtName.Text.Trim(),
+				Surname = txtSurname.Text.Trim(),
+				Phone = txtPhone.Text.Trim(),
+				Email = txtEmail.Text.Trim(),
+				BirthYear = birthYear,
+				IsApproved = chkIsApproved.Checked
+			};
 
-				if (trainerIdEdit == null)
-				{
-					// ADD
-					trainer = new Trainer();
-					context.Trainers.Add(trainer);
-				}
-				else
-				{
-					// EDIT
-					trainer = context.Trainers.Find(trainerIdEdit.Value);
-
-					if (trainer == null)
-					{
-						MessageBox.Show("Trainer not found in DataBase.");
-						return;
-					}
-				}
-
-				// Ortak alanlar
-				trainer.Name = txtName.Text;
-				trainer.Surname = txtSurname.Text;
-				trainer.Phone = txtPhone.Text;
-				trainer.Email = txtEmail.Text;
-				trainer.BirthYear = birthYear;
-				trainer.IsApproved = chkIsApproved.Checked;
-
-				context.SaveChanges();
-			}
-
-			this.DialogResult = DialogResult.OK;
-			this.Close();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
 		}
-    }
-
-
+	}
 }

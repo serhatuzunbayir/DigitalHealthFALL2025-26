@@ -1,224 +1,218 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Desktop.Services;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Linq;
-using System.Drawing;
-using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DigitalHealthTracker.Desktop
 {
-    public partial class WorkoutProgramEditForm : Form
-    {
+	public partial class WorkoutProgramEditForm : Form
+	{
+		private int trainerId;
+		private int? programIdEdit;
 
-        private int trainerId;
-        private int? programIdEdit;
+		private readonly List<WorkoutProgramItem> tempItems = new List<WorkoutProgramItem>();
 
-        private readonly List<WorkoutProgramItem> tempItems = new List<WorkoutProgramItem>();
+		private readonly WorkoutApiService _workoutApi = new WorkoutApiService();
+		private readonly WorkoutProgramApiService _programApi = new WorkoutProgramApiService();
 
-        public WorkoutProgramEditForm(int trainerId)
-        {
-            InitializeComponent();
-            this.trainerId = trainerId;
+		public WorkoutProgramEditForm(int trainerId)
+		{
+			InitializeComponent();
+			this.trainerId = trainerId;
 
-            ConfigureItemsGrid();
-            LoadWorkoutsToCombo();
-        }
-
-        public WorkoutProgramEditForm(int trainerId, WorkoutProgram tempProgram) : this(trainerId)
-        {
-            programIdEdit = tempProgram.Id;
-
-            using (var context = new AppDbContext())
-            {
-                var program = context.WorkoutPrograms
-                    .Include(p => p.Items)
-                    .ThenInclude(i => i.Workout)
-                    .SingleOrDefault(p => p.Id == tempProgram.Id);
-
-                if (program == null)
-                {
-                    MessageBox.Show("Program not found in DataBase.");
-                    Close();
-                    return;
-                }
-
-                txtTitle.Text = program.Title;
-
-                // Edit modunda item’ları temp listeye al
-                tempItems.Clear();
-                foreach (var it in program.Items)
-                {
-                    tempItems.Add(new WorkoutProgramItem
-                    {
-                        Id = it.Id, // var olan item’ları tanımak için
-                        WorkoutId = it.WorkoutId,
-                        DayNo = it.DayNo,
-                        Sets = it.Sets,
-                        Reps = it.Reps
-                    });
-                }
-
-                RefreshItemsGrid();
-            }
-        }
-
-        private void ConfigureItemsGrid()
-        {
-            dgvItems.AutoGenerateColumns = true;
-            dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvItems.MultiSelect = false;
-            dgvItems.ReadOnly = true;
-            dgvItems.AllowUserToAddRows = false;
+			ConfigureItemsGrid();
 		}
 
-		private void LoadWorkoutsToCombo()
-        {
-            using (var context = new AppDbContext())
-            {
-                var workouts = context.Workouts
-                    .OrderBy(w => w.Name)
-                    .Select(w => new { w.Id, w.Name })
-                    .ToList();
+		public WorkoutProgramEditForm(int trainerId, WorkoutProgram tempProgram) : this(trainerId)
+		{
+			programIdEdit = tempProgram.Id;
+		}
 
-                cmbWorkouts.DataSource = workouts;
-                cmbWorkouts.DisplayMember = "Name";
-                cmbWorkouts.ValueMember = "Id";
-            }
-        }
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadWorkoutsToCombo();
 
-        private void RefreshItemsGrid()
-        {
-            using (var context = new AppDbContext())
-            {
-				// Grid’de workout name görünsün diye join’li view
-				var view = tempItems
-	                                .Select(it => new
-	                                {
-		                                it.WorkoutId,
-		                                WorkoutName = context.Workouts
-			                                .Where(w => w.Id == it.WorkoutId)
-			                                .Select(w => w.Name)
-			                                .FirstOrDefault(),
-		                                it.DayNo,
-		                                it.Sets,
-		                                it.Reps
-	                                })
-	                                .OrderBy(x => x.DayNo)
-	                                .ThenBy(x => x.WorkoutName)
-	                                .ToList();
+			if (programIdEdit != null)
+				await LoadProgramForEdit(programIdEdit.Value);
+		}
 
-				dgvItems.DataSource = null;
-                dgvItems.DataSource = view;
-            }
-        }
+		private void ConfigureItemsGrid()
+		{
+			dgvItems.AutoGenerateColumns = true;
+			dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+			dgvItems.MultiSelect = false;
+			dgvItems.ReadOnly = true;
+			dgvItems.AllowUserToAddRows = false;
+		}
 
-        private void btnAddItem_Click(object sender, EventArgs e)
-        {
-            if (cmbWorkouts.SelectedValue == null)
-            {
-                MessageBox.Show("Please select a workout.");
-                return;
-            }           
+		private async Task LoadWorkoutsToCombo()
+		{
+			var workouts = await _workoutApi.GetAllAsync();
+			cmbWorkouts.DataSource = workouts;
+			cmbWorkouts.DisplayMember = "Name";
+			cmbWorkouts.ValueMember = "Id";
+		}
 
-            if (!int.TryParse(txtSets.Text, out int sets) || sets <= 0)
-            {
-                MessageBox.Show("Sets must be a positive number.");
-                return;
-            }
+		private async Task LoadProgramForEdit(int programId)
+		{
+			var program = await _programApi.GetByIdAsync(programId);
+			if (program == null)
+			{
+				MessageBox.Show("Program not found.");
+				Close();
+				return;
+			}
 
-            if (!int.TryParse(txtReps.Text, out int reps) || reps <= 0)
-            {
-                MessageBox.Show("Reps must be a positive number.");
-                return;
-            }
+			txtTitle.Text = program.Title;
 
-            int workoutId = (int)cmbWorkouts.SelectedValue;
+			tempItems.Clear();
+			foreach (var it in program.Items)
+			{
+				tempItems.Add(new WorkoutProgramItem
+				{
+					WorkoutId = it.WorkoutId,
+					DayNo = it.DayNo,
+					Sets = it.Sets,
+					Reps = it.Reps
+				});
+			}
 
-            tempItems.Add(new WorkoutProgramItem
-            {
-                WorkoutId = workoutId,
-                DayNo = 1,
-                Sets = sets,
-                Reps = reps
-            });
+			RefreshItemsGrid();
+		}
 
-            RefreshItemsGrid();
-        }
+		private void RefreshItemsGrid()
+		{
+			// Combo datasından (Id, Name) map çıkar (DTO'ya bağımlı kalmadan)
+			var workoutMap = new Dictionary<int, string>();
 
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            var title = txtTitle.Text.Trim();
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                MessageBox.Show("Program title is required.");
-                return;
-            }
+			if (cmbWorkouts.DataSource is System.Collections.IEnumerable items)
+			{
+				foreach (var obj in items)
+				{
+					var t = obj.GetType();
+					var idProp = t.GetProperty("Id");
+					var nameProp = t.GetProperty("Name");
 
-            if (tempItems.Count == 0)
-            {
-                MessageBox.Show("Please add at least one workout item.");
-                return;
-            }
+					if (idProp == null || nameProp == null) continue;
 
-            using (var context = new AppDbContext())
-            {
-                WorkoutProgram program;
+					int id = (int)idProp.GetValue(obj);
+					string name = (string)(nameProp.GetValue(obj) ?? "");
+					if (!workoutMap.ContainsKey(id))
+						workoutMap.Add(id, name);
+				}
+			}
 
-                if (programIdEdit == null)
-                {
-                    // ADD
-                    program = new WorkoutProgram();
-                    context.WorkoutPrograms.Add(program);
-                }
-                else
-                {
-                    // EDIT
-                    program = context.WorkoutPrograms
-                        .Include(p => p.Items)
-                        .SingleOrDefault(p => p.Id == programIdEdit.Value);
+			var view = tempItems
+				.Select(it => new
+				{
+					it.WorkoutId,
+					WorkoutName = workoutMap.ContainsKey(it.WorkoutId) ? workoutMap[it.WorkoutId] : "",
+					it.DayNo,
+					it.Sets,
+					it.Reps
+				})
+				.OrderBy(x => x.DayNo)
+				.ThenBy(x => x.WorkoutName)
+				.ToList();
 
-                    if (program == null)
-                    {
-                        MessageBox.Show("Program not found in database.");
-                        return;
-                    }
+			dgvItems.DataSource = null;
+			dgvItems.DataSource = view;
+		}
 
-                    // Eski item’ları temizle (en basit yöntem)
-                    context.WorkoutProgramItems.RemoveRange(program.Items);
-                }
 
-                program.Title = title;
-                program.TrainerId = trainerId;
+		private void btnAddItem_Click(object sender, EventArgs e)
+		{
+			if (cmbWorkouts.SelectedValue == null)
+			{
+				MessageBox.Show("Please select a workout.");
+				return;
+			}
 
-                // Yeni item’ları ekle
-                program.Items = tempItems.Select(it => new WorkoutProgramItem
-                {
-                    WorkoutId = it.WorkoutId,
-                    DayNo = it.DayNo,
-                    Sets = it.Sets,
-                    Reps = it.Reps
-                }).ToList();
+			if (!int.TryParse(txtSets.Text, out int sets) || sets <= 0)
+			{
+				MessageBox.Show("Sets must be a positive number.");
+				return;
+			}
 
-                context.SaveChanges();
-            }
+			if (!int.TryParse(txtReps.Text, out int reps) || reps <= 0)
+			{
+				MessageBox.Show("Reps must be a positive number.");
+				return;
+			}
 
-            DialogResult = DialogResult.OK;
-            Close();
-        }
+			int workoutId = (int)cmbWorkouts.SelectedValue;
 
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
+			tempItems.Add(new WorkoutProgramItem
+			{
+				WorkoutId = workoutId,
+				DayNo = 1, // sende hep 1; istersen txtDayNo ekleriz
+				Sets = sets,
+				Reps = reps
+			});
 
-        private void btnRemoveItem_Click(object sender, EventArgs e)
-        {
+			RefreshItemsGrid();
+		}
+
+		private async void btnSave_Click(object sender, EventArgs e)
+		{
+			var title = txtTitle.Text.Trim();
+			if (string.IsNullOrWhiteSpace(title))
+			{
+				MessageBox.Show("Program title is required.");
+				return;
+			}
+
+			if (tempItems.Count == 0)
+			{
+				MessageBox.Show("Please add at least one workout item.");
+				return;
+			}
+
+			var req = new WorkoutProgramSaveRequest
+			{
+				TrainerId = trainerId,
+				Title = title,
+				Items = tempItems.Select(it => new WorkoutProgramItemSave
+				{
+					WorkoutId = it.WorkoutId,
+					DayNo = it.DayNo,
+					Sets = it.Sets,
+					Reps = it.Reps
+				}).ToList()
+			};
+
+			try
+			{
+				if (programIdEdit == null)
+				{
+					await _programApi.CreateAsync(req);
+				}
+				else
+				{
+					await _programApi.UpdateAsync(programIdEdit.Value, req);
+				}
+
+				DialogResult = DialogResult.OK;
+				Close();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, "Save Error");
+			}
+		}
+
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			DialogResult = DialogResult.Cancel;
+			Close();
+		}
+
+		private void btnRemoveItem_Click(object sender, EventArgs e)
+		{
 			if (dgvItems.CurrentRow == null)
 			{
 				MessageBox.Show("Please select an item to remove.");
@@ -245,5 +239,5 @@ namespace DigitalHealthTracker.Desktop
 			tempItems.Remove(item);
 			RefreshItemsGrid();
 		}
-    }
+	}
 }

@@ -10,9 +10,9 @@ namespace DigitalHealthTracker.Data
 	public class AppDbContext : DbContext
 	{
 		// Constructor
-		public AppDbContext()
-		{
-		}
+		public AppDbContext() { }
+
+		public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
 		// Tabloyu temsil eden DbSet
 		public DbSet<User> Users { get; set; }
@@ -26,19 +26,16 @@ namespace DigitalHealthTracker.Data
 
 
 
-
-
-
-
-		// Veritabanı bağlantı ayarı
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
-			if (!optionsBuilder.IsConfigured)
-			{
-				var dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Healthtracker.db");
-				optionsBuilder.UseSqlite($"Data Source={dbPath}");
-			}
+			if (optionsBuilder.IsConfigured) return;
+
+			var dbPath = DbPaths.GetDbFilePath();
+			optionsBuilder.UseSqlite($"Data Source={dbPath}");
 		}
+
+
+
 
 		//Relations(Keys - FKeys- Relation Counts)
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -101,6 +98,11 @@ namespace DigitalHealthTracker.Data
 				.OnDelete(DeleteBehavior.Restrict);
 
 
+			modelBuilder.Entity<WorkoutLog>()
+				.HasOne(l => l.AssignedProgram)
+				.WithMany()
+				.HasForeignKey(l => l.AssignedProgramId)
+				.OnDelete(DeleteBehavior.Cascade);
 
 		}
 

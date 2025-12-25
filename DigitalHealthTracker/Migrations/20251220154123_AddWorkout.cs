@@ -19,18 +19,20 @@ namespace DigitalHealthTracker.Data.Migrations
                 name: "FK_WorkoutPrograms_Users_UserId",
                 table: "WorkoutPrograms");
 
-            migrationBuilder.DropTable(
-                name: "WorkoutLogs");
+			/* migrationBuilder.DropTable(
+				 name: "WorkoutLogs");*/
+			migrationBuilder.Sql(@"DROP TABLE IF EXISTS ""WorkoutLogs"";");
 
-            migrationBuilder.DropPrimaryKey(
+			migrationBuilder.DropPrimaryKey(
                 name: "PK_WorkoutPrograms",
                 table: "WorkoutPrograms");
 
-            migrationBuilder.DropIndex(
+            /*migrationBuilder.DropIndex(
                 name: "IX_WorkoutPrograms_UserId",
-                table: "WorkoutPrograms");
+                table: "WorkoutPrograms");*/
+			migrationBuilder.Sql(@"DROP INDEX IF EXISTS ""IX_WorkoutPrograms_UserId"";");
 
-            migrationBuilder.DropColumn(
+			migrationBuilder.DropColumn(
                 name: "Bmi",
                 table: "Users");
 

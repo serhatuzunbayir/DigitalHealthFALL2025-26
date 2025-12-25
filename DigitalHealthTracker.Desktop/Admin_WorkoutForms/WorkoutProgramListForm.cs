@@ -1,26 +1,28 @@
-﻿using DigitalHealthTracker.Data;
-using DigitalHealthTracker.Data.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using DigitalHealthTracker.Data.Entities;
+using DigitalHealthTracker.Desktop.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace DigitalHealthTracker.Desktop
 {
 	public partial class WorkoutProgramListForm : Form
 	{
+		private readonly WorkoutProgramApiService _programApi = new WorkoutProgramApiService();
+
 		public WorkoutProgramListForm()
 		{
 			InitializeComponent();
 			ConfigureGrid();
 			StyleGrid();
+		}
 
-			// Form açılır açılmaz kendi programlarını yükle
-			LoadProgramsForLoggedInTrainer();
+		protected override async void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+			await LoadProgramsForLoggedInTrainer();
 		}
 
 		private void ConfigureGrid()
@@ -52,19 +54,15 @@ namespace DigitalHealthTracker.Desktop
 			return Session.TrainerId.Value;
 		}
 
-		private WorkoutProgram? GetSelectedProgram()
+		private WorkoutProgramListDto? GetSelectedProgram()
 		{
-			if (dgvPrograms.CurrentRow == null) return null;
-			return dgvPrograms.CurrentRow.DataBoundItem as WorkoutProgram;
+			return dgvPrograms.CurrentRow?.DataBoundItem as WorkoutProgramListDto;
 		}
 
-		private void LoadProgramsForLoggedInTrainer()
+		private async Task LoadProgramsForLoggedInTrainer()
 		{
 			int trainerId;
-			try
-			{
-				trainerId = GetLoggedInTrainerId();
-			}
+			try { trainerId = GetLoggedInTrainerId(); }
 			catch
 			{
 				MessageBox.Show("Please login as Trainer.");
@@ -72,181 +70,90 @@ namespace DigitalHealthTracker.Desktop
 				return;
 			}
 
-			using (var context = new AppDbContext())
-			{
-				var programs = context.WorkoutPrograms
-					.Include(p => p.Trainer)
-					.Where(p => p.TrainerId == trainerId)
-					.OrderBy(p => p.Id)
-					.ToList();
+			var programs = await _programApi.GetByTrainerAsync(trainerId);
 
-				dgvPrograms.DataSource = null;
-				dgvPrograms.DataSource = programs;
-			}
+			dgvPrograms.DataSource = null;
+			dgvPrograms.DataSource = programs;
 
-			if (dgvPrograms.Columns["Trainer"] != null) dgvPrograms.Columns["Trainer"].Visible = false;
-			if (dgvPrograms.Columns["Items"] != null) dgvPrograms.Columns["Items"].Visible = false;
+			// sadece grid temizliği
+			if (dgvPrograms.Columns["TrainerId"] != null) dgvPrograms.Columns["TrainerId"].Visible = false;
 		}
 
-		// Eğer butonun varsa refresh için kullan
-		private void btnLoadPrograms_Click(object sender, EventArgs e)
+		private async void btnLoadPrograms_Click(object sender, EventArgs e)
 		{
-			LoadProgramsForLoggedInTrainer();
+			await LoadProgramsForLoggedInTrainer();
 		}
 
 		private void btnAddProgram_Click(object sender, EventArgs e)
 		{
 			int trainerId;
-			try
-			{
-				trainerId = GetLoggedInTrainerId();
-			}
-			catch
-			{
-				MessageBox.Show("Please login as Trainer.");
-				return;
-			}
+			try { trainerId = GetLoggedInTrainerId(); }
+			catch { MessageBox.Show("Please login as Trainer."); return; }
 
-			try
+			using (var frm = new WorkoutProgramEditForm(trainerId))
 			{
-				using (var frm = new WorkoutProgramEditForm(trainerId))
-				{
-					var result = frm.ShowDialog();
-					if (result == DialogResult.OK)
-						LoadProgramsForLoggedInTrainer();
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.ToString(), "Add Program Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (frm.ShowDialog() == DialogResult.OK)
+					_ = LoadProgramsForLoggedInTrainer();
 			}
 		}
 
 		private void btnEditProgram_Click(object sender, EventArgs e)
 		{
 			int trainerId;
-			try
-			{
-				trainerId = GetLoggedInTrainerId();
-			}
-			catch
-			{
-				MessageBox.Show("Please login as Trainer.");
-				return;
-			}
+			try { trainerId = GetLoggedInTrainerId(); }
+			catch { MessageBox.Show("Please login as Trainer."); return; }
 
-			var selectedProgram = GetSelectedProgram();
-			if (selectedProgram == null)
-			{
-				MessageBox.Show("Please select a program to edit...");
-				return;
-			}
+			var selected = GetSelectedProgram();
+			if (selected == null) { MessageBox.Show("Please select a program to edit..."); return; }
 
-			// ✅ ekstra güvenlik: başka trainer programı edit edilemesin
-			if (selectedProgram.TrainerId != trainerId)
+			if (selected.TrainerId != trainerId)
 			{
 				MessageBox.Show("You can only edit your own programs.");
 				return;
 			}
 
-			try
+			// WorkoutProgramEditForm edit ctor senin eski kodun WorkoutProgram isterdi.
+			// Minimal değişiklik: fake entity veriyoruz sadece Id için.
+			var temp = new WorkoutProgram { Id = selected.Id };
+
+			using (var frm = new WorkoutProgramEditForm(trainerId, temp))
 			{
-				using (var frm = new WorkoutProgramEditForm(trainerId, selectedProgram))
-				{
-					var result = frm.ShowDialog();
-					if (result == DialogResult.OK)
-						LoadProgramsForLoggedInTrainer();
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.ToString(), "Edit Program Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (frm.ShowDialog() == DialogResult.OK)
+					_ = LoadProgramsForLoggedInTrainer();
 			}
 		}
 
-		private void btnDeleteProgram_Click(object sender, EventArgs e)
+		private async void btnDeleteProgram_Click(object sender, EventArgs e)
 		{
 			int trainerId;
-			try
-			{
-				trainerId = GetLoggedInTrainerId();
-			}
-			catch
-			{
-				MessageBox.Show("Please login as Trainer.");
-				return;
-			}
+			try { trainerId = GetLoggedInTrainerId(); }
+			catch { MessageBox.Show("Please login as Trainer."); return; }
 
-			var selectedProgram = GetSelectedProgram();
-			if (selectedProgram == null)
-			{
-				MessageBox.Show("Please select a program to delete...");
-				return;
-			}
+			var selected = GetSelectedProgram();
+			if (selected == null) { MessageBox.Show("Please select a program to delete..."); return; }
 
-			// ✅ ekstra güvenlik: başka trainer programı silinmesin
-			if (selectedProgram.TrainerId != trainerId)
+			if (selected.TrainerId != trainerId)
 			{
 				MessageBox.Show("You can only delete your own programs.");
 				return;
 			}
 
 			var result = MessageBox.Show(
-				$"Are you sure to delete program: '{selectedProgram.Title}' ?",
+				$"Are you sure to delete program: '{selected.Title}' ?",
 				"Delete Confirmation",
 				MessageBoxButtons.YesNo,
 				MessageBoxIcon.Question);
 
-			if (result != DialogResult.Yes)
-				return;
+			if (result != DialogResult.Yes) return;
 
 			try
 			{
-				using (var context = new AppDbContext())
-				{
-					var program = context.WorkoutPrograms
-						.Include(p => p.Items)
-						.SingleOrDefault(p => p.Id == selectedProgram.Id);
-
-					if (program == null)
-					{
-						MessageBox.Show("Program not found in database.");
-						return;
-					}
-
-					// 1) Bu programa bağlı assignment'ları sil
-					var assignments = context.AssignedPrograms
-						.Where(a => a.WorkoutProgramId == program.Id)
-						.ToList();
-					if (assignments.Count > 0)
-						context.AssignedPrograms.RemoveRange(assignments);
-
-					// 2) Bu programa bağlı workout log'larını sil
-					var logs = context.WorkoutLogs
-						.Where(l => l.WorkoutProgramId == program.Id)
-						.ToList();
-					if (logs.Count > 0)
-						context.WorkoutLogs.RemoveRange(logs);
-
-					// 3) Program items (zaten include ettik)
-					if (program.Items != null && program.Items.Count > 0)
-						context.WorkoutProgramItems.RemoveRange(program.Items);
-
-					// 4) Programı sil
-					context.WorkoutPrograms.Remove(program);
-
-					context.SaveChanges();
-				}
-
-
-				LoadProgramsForLoggedInTrainer();
+				await _programApi.DeleteAsync(selected.Id);
+				await LoadProgramsForLoggedInTrainer();
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.ToString(), "Delete Program Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(ex.Message, "Delete Program Error");
 			}
 		}
 	}
