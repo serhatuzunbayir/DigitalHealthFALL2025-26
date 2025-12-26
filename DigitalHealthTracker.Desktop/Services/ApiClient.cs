@@ -6,7 +6,7 @@ namespace DigitalHealthTracker.Desktop.Services
 {
 	public static class ApiClient
 	{
-		private static readonly string BaseUrl = "https://localhost:7193/Swagger";
+		private static readonly string BaseUrl = "https://localhost:7193"; //https://localhost:7193/Swagger
 
 		public static HttpClient Create()
 		{

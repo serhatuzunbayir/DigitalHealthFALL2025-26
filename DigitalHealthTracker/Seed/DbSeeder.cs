@@ -19,7 +19,7 @@ namespace DigitalHealthTracker.Data.Seed
 			}
 
 			// DEMO USER
-			if (!db.Users.Any(u => u.Phone == "5555555555"))
+			if (!db.Users.Any(u => u.Phone == "3333333333"))
 			{
 				db.Users.Add(new User
 				{

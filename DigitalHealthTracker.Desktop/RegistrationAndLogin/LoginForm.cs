@@ -6,121 +6,111 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using DigitalHealthTracker.Data.Infrastructure;
+using DigitalHealthTracker.Desktop.Services;
+using System.Threading.Tasks;
+
 
 
 namespace DigitalHealthTracker.Desktop.RegistrationAndLogin
 {
     public partial class LoginForm : Form
     {
+        private readonly AuthApiService _authApi = new AuthApiService();
+
         public LoginForm()
         {
             InitializeComponent();
         }
 
-        private void LoginForm_Load(object sender, EventArgs e)
+        private async void LoginForm_Load(object sender, EventArgs e)
         {
             cmbRole.Items.Clear();
             cmbRole.Items.Add("Admin");
             cmbRole.Items.Add("Trainer");
             cmbRole.Items.Add("User");
             cmbRole.SelectedIndex = 2; // default User
+            await CheckApiAndUpdateUi();
         }
 
-		private void btnLogin_Click(object sender, EventArgs e)
-		{
-			string phone = txtPhone.Text.Trim();
-			string password = txtPassword.Text;
+        // On form shown, check API status
+        private async Task CheckApiAndUpdateUi()
+        {
+            bool ok = await _authApi.PingAsync();
 
-			if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(password))
-			{
-				MessageBox.Show("Phone and Password are required.");
-				return;
-			}
+            btnLogin.Enabled = ok;
+            btnRegisterUser.Enabled = ok;
+            btnRegisterTrainer.Enabled = ok;
 
-			if (cmbRole.SelectedItem == null)
-			{
-				MessageBox.Show("Please select a role.");
-				return;
-			}
+            lblServerStatus.Text = ok ? "Server: Online" : "Server: Offline (start API)";
+        }
 
-			string roleText = cmbRole.SelectedItem.ToString()!;
+        private async void btnLogin_Click(object sender, EventArgs e)
+        {
+            string phone = txtPhone.Text.Trim();
+            string password = txtPassword.Text;
 
-			try
-			{
-				using (var context = new AppDbContext())
-				{
-					Session.Clear();
+            if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(password))
+            {
+                MessageBox.Show("Phone and Password are required.");
+                return;
+            }
 
-					if (roleText == "Admin")
-					{
-						var admin = context.Admins.SingleOrDefault(a => a.Phone == phone);
-						if (admin == null || !PasswordHasher.VerifyPassword(password, admin.PasswordHash))
-						{
-							MessageBox.Show("Invalid admin credentials.");
-							return;
-						}
+            if (cmbRole.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a role.");
+                return;
+            }
 
-						Session.Role = AppRole.Admin;
-						Session.AdminId = admin.Id;
-						Session.DisplayName = admin.Name;
-					}
-					else if (roleText == "Trainer")
-					{
-						var trainer = context.Trainers.SingleOrDefault(t => t.Phone == phone);
-						if (trainer == null || !PasswordHasher.VerifyPassword(password, trainer.PasswordHash))
-						{
-							MessageBox.Show("Invalid trainer credentials.");
-							return;
-						}
+            string roleText = cmbRole.SelectedItem.ToString()!;
 
-						if (!trainer.IsApproved)
-						{
-							MessageBox.Show("Your trainer account is not approved yet.");
-							return;
-						}
+            try
+            {
+                Session.Clear();
 
-						Session.Role = AppRole.Trainer;
-						Session.TrainerId = trainer.Id;
-						Session.DisplayName = $"{trainer.Name} {trainer.Surname}";
-					}
-					else // User
-					{
-						var user = context.Users.SingleOrDefault(u => u.Phone == phone);
-						if (user == null || !PasswordHasher.VerifyPassword(password, user.PasswordHash))
-						{
-							MessageBox.Show("Invalid user credentials.");
-							return;
-						}
+                var resp = await _authApi.LoginAsync(new LoginRequestDto
+                {
+                    Role = roleText,
+                    Phone = phone,
+                    Password = password
+                });
 
-						Session.Role = AppRole.User;
-						Session.UserId = user.Id;
-						Session.DisplayName = $"{user.Name} {user.Surname}";
-					}
-				}
+                if (resp.Role == "Admin")
+                {
+                    Session.Role = AppRole.Admin;
+                    Session.AdminId = resp.Id;
+                }
+                else if (resp.Role == "Trainer")
+                {
+                    Session.Role = AppRole.Trainer;
+                    Session.TrainerId = resp.Id;
+                }
+                else
+                {
+                    Session.Role = AppRole.User;
+                    Session.UserId = resp.Id;
+                }
 
-				// ✅ Login başarılı -> MainForm'a geç, sonra tekrar login ekranına dön
-				this.Hide();
+                Session.DisplayName = resp.DisplayName;
 
-				using (var main = new MainForm())
-				{
-					main.ShowDialog(); // Logout -> main kapanınca buraya döner
-				}
+                this.Hide();
 
-				// main kapandıysa (logout), session temizle ve login ekranını geri aç
-				Session.Clear();
-				txtPassword.Text = "";
-				this.Show();
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(ex.ToString(), "Login Error",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+                using (var main = new MainForm())
+                    main.ShowDialog();
+
+                Session.Clear();
+                txtPassword.Text = "";
+                this.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Login Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
 
-		private void btnRegisterUser_Click(object sender, EventArgs e)
+
+        private void btnRegisterUser_Click(object sender, EventArgs e)
         {
             using (var frm = new UserRegisterForm())
                 frm.ShowDialog();
@@ -134,8 +124,13 @@ namespace DigitalHealthTracker.Desktop.RegistrationAndLogin
 
         private void btnExit_Click(object sender, EventArgs e)
         {
-			this.DialogResult = DialogResult.Cancel;
-			this.Close();
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+
+        private async void lblServerStatus_Click(object sender, EventArgs e)
+        {
+			await CheckApiAndUpdateUi();
 		}
     }
 }

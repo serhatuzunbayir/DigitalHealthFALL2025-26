@@ -38,6 +38,7 @@
             btnRegisterUser = new Button();
             btnRegisterTrainer = new Button();
             btnExit = new Button();
+            lblServerStatus = new Button();
             SuspendLayout();
             // 
             // txtPhone
@@ -129,11 +130,22 @@
             btnExit.UseVisualStyleBackColor = true;
             btnExit.Click += btnExit_Click;
             // 
+            // lblServerStatus
+            // 
+            lblServerStatus.Location = new Point(256, 289);
+            lblServerStatus.Name = "lblServerStatus";
+            lblServerStatus.Size = new Size(180, 36);
+            lblServerStatus.TabIndex = 10;
+            lblServerStatus.Text = "Refresh";
+            lblServerStatus.UseVisualStyleBackColor = true;
+            lblServerStatus.Click += lblServerStatus_Click;
+            // 
             // LoginForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblServerStatus);
             Controls.Add(btnExit);
             Controls.Add(btnRegisterTrainer);
             Controls.Add(btnRegisterUser);
@@ -163,5 +175,6 @@
         private Button btnRegisterUser;
         private Button btnRegisterTrainer;
         private Button btnExit;
+        private Button lblServerStatus;
     }
 }
