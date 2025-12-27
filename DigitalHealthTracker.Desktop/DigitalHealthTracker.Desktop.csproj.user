@@ -7,6 +7,9 @@
     <Compile Update="Admin_UserForms\UserListForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Admin_UserForms\UserWorkoutForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Admin_WorkoutForms\AssignProgramForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -23,9 +26,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Admin_UserForms\UserEditForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Update="Admin_UserForms\UserWorkoutForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Admin_WorkoutForms\WorkoutEditForm.cs">

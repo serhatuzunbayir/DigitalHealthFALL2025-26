@@ -51,7 +51,7 @@
             btnCompleteDay.Name = "btnCompleteDay";
             btnCompleteDay.Size = new Size(116, 51);
             btnCompleteDay.TabIndex = 6;
-            btnCompleteDay.Text = "Complete Day";
+            btnCompleteDay.Text = "Complete Program";
             btnCompleteDay.UseVisualStyleBackColor = true;
             btnCompleteDay.Click += btnCompleteDay_Click;
             // 
@@ -69,7 +69,7 @@
             // 
             btnRefreshHistory.Location = new Point(47, 376);
             btnRefreshHistory.Name = "btnRefreshHistory";
-            btnRefreshHistory.Size = new Size(94, 29);
+            btnRefreshHistory.Size = new Size(118, 48);
             btnRefreshHistory.TabIndex = 8;
             btnRefreshHistory.Text = "Refresh History";
             btnRefreshHistory.UseVisualStyleBackColor = true;

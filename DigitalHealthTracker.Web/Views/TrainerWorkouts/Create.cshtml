@@ -1,0 +1,34 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.Trainer.WorkoutEditVm
+
+@{
+    ViewData["Title"] = "Create Workout";
+}
+
+<h1>Create Workout</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <p style="color:#b00020;"><b>@Model.Error</b></p>
+}
+
+<form method="post" action="/Trainer/Workouts/Create">
+    @Html.AntiForgeryToken()
+
+    <p>
+        <label>Name *</label><br />
+        <input asp-for="Name" />
+        <div style="color:#b00020;">@Html.ValidationMessageFor(x => x.Name)</div>
+    </p>
+
+    <p>
+        <label>Description</label><br />
+        <textarea asp-for="Description" rows="4" cols="60"></textarea>
+        <div style="color:#b00020;">@Html.ValidationMessageFor(x => x.Description)</div>
+    </p>
+
+    <button type="submit">Create</button>
+</form>
+
+<p style="margin-top:12px;">
+    <a href="/Trainer/Workouts">Back</a>
+</p>

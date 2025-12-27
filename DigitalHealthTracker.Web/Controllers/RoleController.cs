@@ -1,9 +1,9 @@
 ﻿using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using DigitalHealthTracker.Web.Filters;
 using DigitalHealthTracker.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalHealthTracker.Web.Controllers;
 
@@ -66,7 +66,7 @@ public class RoleController : Controller
 	}
 
 	// =========================
-	// USER
+	// USER DASHBOARD (BURASI /User)
 	// =========================
 	[RequireRole("User")]
 	[HttpGet("/User")]
@@ -79,21 +79,18 @@ public class RoleController : Controller
 			.GetRequiredService<IHttpClientFactory>()
 			.CreateClient("api");
 
-		// 1) Active program (boş/204 olabilir)
-		ActiveAssignmentVm? active = null;
+		// ✅ ACTIVE LIST
+		var activeList = await client.GetFromJsonAsync<List<ActiveListRowDto>>(
+			$"/api/AssignedPrograms/user/{userId}/active-list"
+		) ?? new List<ActiveListRowDto>();
 
-		var activeResp = await client.GetAsync($"/api/AssignedPrograms/user/{userId}/active");
-		if (activeResp.IsSuccessStatusCode && activeResp.Content.Headers.ContentLength > 0)
-		{
-			active = await activeResp.Content.ReadFromJsonAsync<ActiveAssignmentVm>();
-		}
-
-		// 2) Assigned programs (HER ZAMAN çek)
+		// ✅ ALL ASSIGNMENTS
 		var rows = await client.GetFromJsonAsync<List<UserAssignedProgramRowVm>>(
 			$"/api/AssignedPrograms/user/{userId}"
 		) ?? new List<UserAssignedProgramRowVm>();
 
-		// --- Health summary (BMI + category + target weight/diff) ---
+		// ✅ HEALTH SUMMARY
+		HealthVm? health = null;
 		var u = await client.GetFromJsonAsync<UserHealthDto>($"/api/Users/{userId}");
 
 		if (u is not null)
@@ -114,7 +111,6 @@ public class RoleController : Controller
 				bmi < 25.0 ? "Normal" :
 				bmi < 30.0 ? "Overweight" : "Obese";
 
-			// ideal BMI = 22.00
 			double targetWeight = 0;
 			double diff = 0;
 
@@ -122,10 +118,10 @@ public class RoleController : Controller
 			{
 				var m = heightCm / 100.0;
 				targetWeight = 22.0 * (m * m);
-				diff = weightKg - targetWeight; // + ise fazlalık, - ise eksik
+				diff = weightKg - targetWeight;
 			}
 
-			ViewBag.Health = new
+			health = new HealthVm
 			{
 				HeightCm = heightCm,
 				WeightKg = weightKg,
@@ -135,17 +131,26 @@ public class RoleController : Controller
 				WeightDiffKg = diff
 			};
 		}
-		else
+
+		var vm = new UserDashboardVm
 		{
-			ViewBag.Health = null;
-		}
+			Health = health,
+			AssignedPrograms = rows,
+			ActiveAssignments = activeList.Select(x => new UserActiveAssignmentVm
+			{
+				Id = x.Id,
+				WorkoutProgramId = x.WorkoutProgramId,
+				ProgramTitle = x.ProgramTitle ?? "",
+				TrainerName = x.TrainerName ?? ""
+			}).ToList()
+		};
 
-
-		ViewBag.Assigned = rows;
-
-		return View("User", active);
+		return View("User", vm);
 	}
 
+	// =========================
+	// USER: APPROVE
+	// =========================
 	[RequireRole("User")]
 	[HttpPost("/User/Approve")]
 	[ValidateAntiForgeryToken]
@@ -158,13 +163,11 @@ public class RoleController : Controller
 			.GetRequiredService<IHttpClientFactory>()
 			.CreateClient("api");
 
-		// API "kendi assignment'ını" kontrol ettiği için userId'yi QUERY ile gönderiyoruz
 		var req = new HttpRequestMessage(
 			HttpMethod.Put,
 			$"/api/AssignedPrograms/{id}/approve?userId={userId}"
 		)
 		{
-			// Body bekleyen API'ler için boş JSON
 			Content = new StringContent("{}", Encoding.UTF8, "application/json")
 		};
 
@@ -178,6 +181,9 @@ public class RoleController : Controller
 		return Redirect("/User");
 	}
 
+	// =========================
+	// USER: COMPLETE WITH LOGS
+	// =========================
 	[RequireRole("User")]
 	[HttpPost("/User/Complete")]
 	[ValidateAntiForgeryToken]
@@ -190,13 +196,11 @@ public class RoleController : Controller
 			.GetRequiredService<IHttpClientFactory>()
 			.CreateClient("api");
 
-		// userId kontrolü API tarafında varsa diye query gönderiyoruz
 		var req = new HttpRequestMessage(
 			HttpMethod.Put,
 			$"/api/AssignedPrograms/{id}/complete-with-logs?userId={userId}"
 		)
 		{
-			// Body bekleyen API'ler için boş JSON
 			Content = new StringContent("{}", Encoding.UTF8, "application/json")
 		};
 
@@ -209,10 +213,18 @@ public class RoleController : Controller
 
 		return Redirect("/User");
 	}
+
 	private class UserHealthDto
 	{
 		public double? HeightCm { get; set; }
 		public double? WeightKg { get; set; }
 	}
 
+	private sealed class ActiveListRowDto
+	{
+		[JsonPropertyName("id")] public int Id { get; set; }
+		[JsonPropertyName("workoutProgramId")] public int WorkoutProgramId { get; set; }
+		[JsonPropertyName("programTitle")] public string? ProgramTitle { get; set; }
+		[JsonPropertyName("trainerName")] public string? TrainerName { get; set; }
+	}
 }

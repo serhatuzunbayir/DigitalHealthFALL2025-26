@@ -2,13 +2,15 @@
 using DigitalHealthTracker.Web.Filters;
 using DigitalHealthTracker.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DigitalHealthTracker.Web.Controllers;
 
 [RequireRole("User")]
 public class UserController : Controller
 {
+	// =========================
+	// PROFILE
+	// =========================
 	[HttpGet("/User/Profile")]
 	public async Task<IActionResult> Profile()
 	{
@@ -19,7 +21,7 @@ public class UserController : Controller
 			.GetRequiredService<IHttpClientFactory>()
 			.CreateClient("api");
 
-		var apiUser = await client.GetFromJsonAsync<ApiUserDto>($"/api/Users/{userId}");
+		var apiUser = await client.GetFromJsonAsync<ApiUserDto>($"/api/Users/{userId.Value}");
 		if (apiUser is null)
 			return View(new UserProfileVm { Error = "User data could not be loaded." });
 
@@ -53,27 +55,26 @@ public class UserController : Controller
 			.GetRequiredService<IHttpClientFactory>()
 			.CreateClient("api");
 
-		// mevcut user'ı çek
-		var existing = await client.GetFromJsonAsync<ApiUserDto>($"/api/Users/{userId}");
+		var existing = await client.GetFromJsonAsync<ApiUserDto>($"/api/Users/{userId.Value}");
 		if (existing is null)
 		{
 			vm.Error = "User data could not be loaded.";
 			return View(vm);
 		}
 
-		// edit alanlarını yaz
 		existing.Name = vm.Name;
 		existing.Surname = vm.Surname;
 		existing.Phone = vm.Phone;
-		existing.Email = string.IsNullOrWhiteSpace(vm.Email) ? null : vm.Email;
+
+		// opsiyoneller boşsa "" gönder (API validation required olabiliyor)
+		existing.Email = string.IsNullOrWhiteSpace(vm.Email) ? "" : vm.Email.Trim();
+		existing.MedicalRecord = string.IsNullOrWhiteSpace(vm.MedicalRecord) ? "" : vm.MedicalRecord.Trim();
 
 		existing.HeightCm = vm.HeightCm;
 		existing.WeightKg = vm.WeightKg;
-
 		existing.BirthYear = vm.BirthYear;
-		existing.MedicalRecord = string.IsNullOrWhiteSpace(vm.MedicalRecord) ? null : vm.MedicalRecord;
 
-		var resp = await client.PutAsJsonAsync($"/api/Users/{userId}", existing);
+		var resp = await client.PutAsJsonAsync($"/api/Users/{userId.Value}", existing);
 		var body = await resp.Content.ReadAsStringAsync();
 
 		if (!resp.IsSuccessStatusCode)
@@ -82,11 +83,10 @@ public class UserController : Controller
 			return View(vm);
 		}
 
-		TempData["UserMsg"] = "Profile updated.";
+		TempData["Success"] = "Profile updated.";
 		return Redirect("/User/Profile");
 	}
 
-	// API User şemasından minimum alanlar
 	private class ApiUserDto
 	{
 		public int Id { get; set; }

@@ -1,0 +1,91 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.Trainer.WorkoutProgramEditVm
+
+@{
+    ViewData["Title"] = "Edit Program";
+}
+
+<h2 class="mb-3">Program Edit</h2>
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mb-2">
+        <h5 class="m-0">Items</h5>
+
+        <button type="submit" name="action" value="add" class="btn btn-sm btn-outline-primary">
+            + Add Item
+        </button>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th style="min-width: 260px;">Workout</th>
+                    <th style="width: 110px;">Sets</th>
+                    <th style="width: 110px;">Reps</th>
+                    <th style="width: 90px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <select asp-for="Items[@i].WorkoutId" class="form-select form-select-sm">
+                                <option value="">-- select --</option>
+                                @foreach (var w in Model.Workouts)
+                                {
+                                    <option value="@w.Id">@w.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Items[@i].WorkoutId" class="text-danger"></span>
+
+                            <input type="hidden" asp-for="Items[@i].DayNo" />
+                        </td>
+
+                        <td>
+                            <input asp-for="Items[@i].Sets" class="form-control form-control-sm" />
+                            <span asp-validation-for="Items[@i].Sets" class="text-danger"></span>
+                        </td>
+
+                        <td>
+                            <input asp-for="Items[@i].Reps" class="form-control form-control-sm" />
+                            <span asp-validation-for="Items[@i].Reps" class="text-danger"></span>
+                        </td>
+
+                        <td class="text-end">
+                            <button type="submit" name="action" value="remove:@i" class="btn btn-sm btn-outline-danger">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-3 d-flex gap-2">
+        <button type="submit" name="action" value="save" class="btn btn-primary">
+            Save
+        </button>
+
+        <a href="/Trainer/Programs" class="btn btn-outline-secondary">
+            Back
+        </a>
+    </div>
+
+    <div class="text-danger mt-2">
+        @Html.ValidationSummary(excludePropertyErrors: true)
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

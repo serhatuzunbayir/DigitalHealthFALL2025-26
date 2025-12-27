@@ -8,11 +8,8 @@ public class LoginVm
 	public string Phone { get; set; } = "";
 
 	[Required]
-	[DataType(DataType.Password)]
 	public string Password { get; set; } = "";
 
 	[Required]
-	public string Role { get; set; } = "User"; // Admin | Trainer | User
-
-	public string? Error { get; set; }
+	public string Role { get; set; } = "User";
 }

@@ -49,8 +49,10 @@ namespace DigitalHealthTracker.Api.Controllers
 				if (trainer == null || !PasswordHasher.VerifyPassword(password, trainer.PasswordHash))
 					return Unauthorized("Invalid trainer credentials.");
 
+				// ✅ FIX: Forbid() KULLANMA (auth handler yoksa patlar)
+				// Bunun yerine 403 + message dön.
 				if (!trainer.IsApproved)
-					return Forbid("Trainer is not approved yet.");
+					return StatusCode(403, "Trainer is not approved yet.");
 
 				return Ok(new LoginResponseDto
 				{

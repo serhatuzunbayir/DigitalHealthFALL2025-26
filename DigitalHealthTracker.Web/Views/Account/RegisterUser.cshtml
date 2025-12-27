@@ -1,0 +1,58 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.RegisterVm
+
+@{
+    ViewData["Title"] = "Register as User";
+}
+
+<h1>Register as User</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <p style="color:red;"><b>@Model.Error</b></p>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <p>
+        <label>Name *</label><br />
+        <input asp-for="Name" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Name)</div>
+    </p>
+
+    <p>
+        <label>Surname *</label><br />
+        <input asp-for="Surname" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Surname)</div>
+    </p>
+
+    <p>
+        <label>Phone *</label><br />
+        <input asp-for="Phone" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Phone)</div>
+    </p>
+
+    <p>
+        <label>Email *</label><br />
+        <input asp-for="Email" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Email)</div>
+    </p>
+
+    <p>
+        <label>Password *</label><br />
+        <input asp-for="Password" type="password" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Password)</div>
+    </p>
+
+    <p>
+        <label>Confirm Password *</label><br />
+        <input asp-for="ConfirmPassword" type="password" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.ConfirmPassword)</div>
+    </p>
+
+    <button type="submit">Register</button>
+</form>
+
+<p style="margin-top:12px;">
+    <a href="/Account/Login">Back to Login</a>
+</p>

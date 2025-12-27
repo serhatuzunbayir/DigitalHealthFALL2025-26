@@ -1,0 +1,50 @@
+﻿@model List<DigitalHealthTracker.Web.ViewModels.Trainer.WorkoutListRowVm>
+
+@{
+    ViewData["Title"] = "Manage Workouts";
+}
+
+<h1>Manage Workouts</h1>
+
+<p>
+    <a href="/Trainer/Workouts/Create">+ Create Workout</a>
+</p>
+
+@if (Model == null || Model.Count == 0)
+{
+    <p>No workouts.</p>
+}
+else
+{
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th style="width:80px;">Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th style="width:220px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var w in Model)
+            {
+                <tr>
+                    <td>@w.Id</td>
+                    <td>@w.Name</td>
+                    <td>@(string.IsNullOrWhiteSpace(w.Description) ? "-" : w.Description)</td>
+                    <td style="display:flex;gap:10px;align-items:center;">
+                        <a href="/Trainer/Workouts/@w.Id/Edit">Edit</a>
+
+                        <form method="post"
+                              action="/Trainer/Workouts/@w.Id/Delete"
+                              style="margin:0;"
+                              onsubmit="return confirm('Delete this workout? If it is used in programs, API may block this.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" style="color:#b00020;">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
