@@ -1,0 +1,40 @@
+﻿@model List<DigitalHealthTracker.Web.ViewModels.UserLookupVm>
+
+<h1>Trainer Dashboard</h1>
+
+<p>
+    <a href="/Trainer/Assign">Assign Program</a>
+</p>
+
+<h2>My Users</h2>
+
+@if (Model.Count == 0)
+{
+    <p>No assigned users.</p>
+}
+else
+{
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Full Name</th>
+                <th>Height (cm)</th>
+                <th>Weight (kg)</th>
+                <th>Logs</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Id</td>
+                    <td>@u.FullName</td>
+                    <td>@u.HeightCm</td>
+                    <td>@u.WeightKg</td>
+                    <td><a href="/Trainer/Logs/@u.Id">View Logs</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -25,7 +25,7 @@ namespace DigitalHealthTracker.Data.Seed
 				{
 					Name = "Ayhan",
 					Surname = "Tasdemir",
-					Phone = "5555555555",
+					Phone = "3333333333",
 					Email = "test@example.com",
 					BirthYear = 1995,
 					HeightCm = 180,

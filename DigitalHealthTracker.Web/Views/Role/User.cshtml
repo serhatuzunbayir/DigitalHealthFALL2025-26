@@ -1,0 +1,123 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.ActiveAssignmentVm?
+
+<h1>User Dashboard</h1>
+
+@{
+    dynamic h = ViewBag.Health;
+}
+
+<h2>Health Summary</h2>
+
+@if (h is null)
+{
+    <p>No health data.</p>
+}
+else
+{
+    <ul>
+        <li>Height: @h.HeightCm cm</li>
+        <li>Weight: @h.WeightKg kg</li>
+        <li>BMI: @(h.Bmi == 0 ? "-" : ((double)h.Bmi).ToString("0.0"))</li>
+        <li>Category: @h.Category</li>
+        <li>Target Weight (BMI 22): @(((double)h.TargetWeightKg).ToString("0.0")) kg</li>
+        <li>Weight Diff (current - target): @(((double)h.WeightDiffKg).ToString("0.0")) kg</li>
+    </ul>
+}
+
+<hr />
+
+
+<p>
+    Welcome: @Context.Session.GetString("DisplayName")
+    | Role: @Context.Session.GetString("Role")
+</p>
+
+<form asp-controller="Account" asp-action="Logout" method="post">
+    @Html.AntiForgeryToken()
+    <button type="submit">Logout</button>
+</form>
+
+<hr />
+
+@if (TempData["UserMsg"] is string msg)
+{
+    <p><b>@msg</b></p>
+}
+
+
+<h2>Active Program</h2>
+
+@if (Model is null)
+{
+    <p>No active program.</p>
+}
+else
+{
+    <p><b>@Model.ProgramTitle</b></p>
+    <p>Trainer: @Model.TrainerName</p>
+    <form asp-controller="Role" asp-action="CompleteWithLogs" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit">Complete Workout</button>
+    </form>
+
+}
+
+<hr />
+
+<h2>Assigned Programs</h2>
+
+@{
+    var assigned = ViewBag.Assigned as List<DigitalHealthTracker.Web.ViewModels.UserAssignedProgramRowVm>
+                   ?? new List<DigitalHealthTracker.Web.ViewModels.UserAssignedProgramRowVm>();
+}
+
+@if (assigned.Count == 0)
+{
+    <p>No assigned programs.</p>
+}
+else
+{
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Trainer</th>
+                <th>Status</th>
+                <th>Assigned At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in assigned)
+            {
+                <tr>
+                    <td>@p.ProgramTitle</td>
+                    <td>@p.TrainerName</td>
+                    <td>@p.Status</td>
+                    <td>@p.AssignedAt</td>
+                    <td>
+                        @if (p.Status == "Pending")
+                        {
+                            <form asp-controller="Role" asp-action="ApproveAssignedProgram" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button type="submit">Approve</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+
+<ul>
+    <li><a href="/User/Logs">My Workout History</a></li>
+</ul>

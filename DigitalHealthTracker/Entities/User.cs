@@ -79,7 +79,7 @@ namespace DigitalHealthTracker.Data.Entities
 					return 0;
 				}
 
-				var diff = TargetWeightKg - WeightKg;
+				var diff = WeightKg - TargetWeightKg;
 				return Math.Round(diff, 1);
 			}
 		}

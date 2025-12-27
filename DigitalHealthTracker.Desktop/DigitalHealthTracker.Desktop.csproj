@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DigitalHealthTracker.Contracts\DigitalHealthTracker.Contracts.csproj" />
     <ProjectReference Include="..\DigitalHealthTracker\DigitalHealthTracker.Data.csproj" />
   </ItemGroup>
 

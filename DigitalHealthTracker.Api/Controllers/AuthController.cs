@@ -1,4 +1,4 @@
-﻿using DigitalHealthTracker.Api.Dtos.Auth;
+﻿using DigitalHealthTracker.Contracts.Auth;
 using DigitalHealthTracker.Data;
 using DigitalHealthTracker.Data.Entities;
 using DigitalHealthTracker.Data.Infrastructure;

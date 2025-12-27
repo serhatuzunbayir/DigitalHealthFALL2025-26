@@ -1,0 +1,38 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.AssignProgramVm
+
+<h1>Assign Program</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <p><b>@Model.Error</b></p>
+}
+
+<form method="post" asp-action="Assign" asp-controller="Trainer">
+    @Html.AntiForgeryToken()
+
+    <p>
+        <label>User</label><br />
+        <select name="UserId">
+            @foreach (var u in Model.Users)
+            {
+                <option value="@u.Id">@u.FullName</option>
+            }
+        </select>
+    </p>
+
+    <p>
+        <label>Workout Program</label><br />
+        <select name="WorkoutProgramId">
+            @foreach (var p in Model.Programs)
+            {
+                <option value="@p.Id">@p.Title</option>
+            }
+        </select>
+    </p>
+
+    <button type="submit">Assign</button>
+</form>
+
+<p style="margin-top:12px;">
+    <a href="/Trainer">Back to Trainer Dashboard</a>
+</p>

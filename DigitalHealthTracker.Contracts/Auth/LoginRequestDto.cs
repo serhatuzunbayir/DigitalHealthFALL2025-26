@@ -1,4 +1,4 @@
-﻿namespace DigitalHealthTracker.Api.Dtos.Auth
+﻿namespace DigitalHealthTracker.Contracts.Auth
 {
 	public class LoginRequestDto
 	{

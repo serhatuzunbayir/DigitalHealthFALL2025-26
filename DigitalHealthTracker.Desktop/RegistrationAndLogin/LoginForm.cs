@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using DigitalHealthTracker.Desktop.Services;
 using System.Threading.Tasks;
+using DigitalHealthTracker.Contracts.Auth;
 
 
 

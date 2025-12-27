@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DigitalHealthTracker</title>
+</head>
+<body>
+    <div style="padding:12px; border-bottom:1px solid #ddd;">
+        <b>DigitalHealthTracker</b>
+
+        <span style="margin-left:16px;">
+            @if (!string.IsNullOrEmpty(Context.Session.GetString("DisplayName")))
+            {
+                <span>
+                    Welcome: @Context.Session.GetString("DisplayName") | Role: @Context.Session.GetString("Role")
+                </span>
+
+                <span style="margin-left:16px;">
+                    @{
+                        var role = Context.Session.GetString("Role");
+                    }
+
+                    @if (role == "Admin")
+                    {
+                        <a href="/Admin">Admin</a>
+                    }
+                    else if (role == "Trainer")
+                    {
+                        <a href="/Trainer">Trainer</a>
+                    }
+                    else if (role == "User")
+                    {
+                        <a href="/User">User</a>
+                        <text> | </text>
+                        <a href="/User/Logs">My History</a>
+                        <text> | </text>
+                        <a href="/User/Profile">My Profile</a>
+                    }
+
+                </span>
+
+                <span style="margin-left:16px;">
+                    <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit">Logout</button>
+                    </form>
+                </span>
+            }
+            else
+            {
+                <a href="/Account/Login" style="margin-left:16px;">Login</a>
+            }
+        </span>
+    </div>
+
+    <div style="padding:12px;">
+        @if (TempData["Msg"] is string msg1 && !string.IsNullOrWhiteSpace(msg1))
+        {
+            <p><b>@msg1</b></p>
+        }
+        @if (TempData["UserMsg"] is string msg2 && !string.IsNullOrWhiteSpace(msg2))
+        {
+            <p><b>@msg2</b></p>
+        }
+
+        @RenderBody()
+    </div>
+</body>
+</html>

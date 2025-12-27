@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http.Json;
-using System.Threading.Tasks;
+using DigitalHealthTracker.Contracts.Auth;
+
 
 namespace DigitalHealthTracker.Desktop.Services
 {
@@ -72,37 +73,5 @@ namespace DigitalHealthTracker.Desktop.Services
 				throw new Exception($"Trainer registration failed: {(int)resp.StatusCode} {resp.ReasonPhrase}\n{body}");
 			}
 		}
-	}
-
-	public class LoginRequestDto
-	{
-		public string Phone { get; set; } = "";
-		public string Password { get; set; } = "";
-		public string Role { get; set; } = ""; // Admin | Trainer | User
-	}
-
-	public class LoginResponseDto
-	{
-		public int Id { get; set; }
-		public string Role { get; set; } = "";
-		public string DisplayName { get; set; } = "";
-	}
-
-	public class RegisterUserRequestDto
-	{
-		public string Name { get; set; } = "";
-		public string Surname { get; set; } = "";
-		public string Phone { get; set; } = "";
-		public string Email { get; set; } = "";
-		public string Password { get; set; } = "";
-	}
-
-	public class RegisterTrainerRequestDto
-	{
-		public string Name { get; set; } = "";
-		public string Surname { get; set; } = "";
-		public string Phone { get; set; } = "";
-		public string Email { get; set; } = "";
-		public string Password { get; set; } = "";
 	}
 }
