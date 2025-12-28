@@ -1,0 +1,209 @@
+﻿@{
+    // 1. Session'dan verileri alıyoruz
+    var displayName = Context.Session.GetString("DisplayName") ?? "";
+    var role = Context.Session.GetString("Role") ?? "";
+    var userId = Context.Session.GetInt32("UserId");
+
+    // 2. LOGO TIKLANINCA GİDİLECEK YERİ BELİRLİYORUZ
+    // Varsayılan (Giriş yapmamış kişi): Home/Index veya Account/Login
+    string brandController = "Home"; 
+    string brandAction = "Index";
+
+    // Eğer giriş yapmışsa rolüne göre kendi dashboard'una gitsin
+    if (role == "Admin")
+    {
+        brandController = "AdminUsers"; // Senin Admin panelin burası
+        brandAction = "Index";
+    }
+    else if (role == "Trainer")
+    {
+        brandController = "Trainer";    // Trainer Dashboard
+        brandAction = "Index";
+    }
+    else if (role == "User")
+    {
+        brandController = "User";       // User Dashboard
+        brandAction = "Index";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - DigitalHealthTracker</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.2/dist/pulse/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* General Font Settings */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6; /* Light gray background */
+        }
+
+        h1, h2, h3, h4, h5, h6, .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+            .navbar-premium {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        /* Floating Content Box */
+        .main-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-top: -30px; /* Pulls content up over the navbar slightly */
+            position: relative;
+            z-index: 10;
+            min-height: 600px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            padding: 20px 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        /* --- GLOBAL SMOOTH BUTTONS --- */
+        .btn {
+            border-radius: 50px; /* Makes all buttons pill-shaped (smoother look) */
+            padding: 10px 24px; /* More breathing room */
+            font-weight: 600; /* Bold text looks better */
+            transition: all 0.3s ease; /* THE MAGIC: Animates changes over 0.3 seconds */
+            letter-spacing: 0.5px;
+        }
+
+            .btn:hover {
+                transform: translateY(-3px); /* Lifts the button up slightly */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* Adds a shadow below */
+            }
+
+            .btn:active {
+                transform: translateY(-1px); /* Pushes it back down when clicked */
+            }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-premium mb-5 py-3">
+            <div class="container">
+                
+                <a class="navbar-brand fs-3" asp-controller="@brandController" asp-action="@brandAction">
+                    <i class="bi bi-activity me-2"></i>DigitalHealthTracker
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav me-auto">
+                        @if (userId != null)
+                        {
+                            @* ================= ADMIN LINKS ================= *@
+                            if (role == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AdminUsers" asp-action="Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AdminUsers" asp-action="Index">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="AdminTrainers" asp-action="Index">Trainers</a>
+                                </li>
+                            }
+                            @* ================= TRAINER LINKS ================= *@
+                            else if (role == "Trainer")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Trainer" asp-action="Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="TrainerPrograms" asp-action="Index">Programs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="TrainerWorkouts" asp-action="Index">Workouts</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Trainer" asp-action="Assign">Assign</a>
+                                </li>
+                            }
+                            @* ================= USER LINKS ================= *@
+                            else if (role == "User")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="User" asp-action="Index">Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="User" asp-action="Profile">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Logs" asp-action="UserLogs">My Logs</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <div class="d-flex align-items-center">
+                        @if (userId != null)
+                        {
+                            <span class="text-white me-3 fw-medium">
+                                <i class="bi bi-person-circle me-1"></i> @displayName <span class="badge bg-light text-primary rounded-pill ms-1">@role</span>
+                            </span>
+                            <a href="/Account/Logout" class="btn btn-outline-light btn-sm rounded-pill px-3">Logout</a>
+                        }
+                        else
+                        {
+                            <a href="/Account/Login" class="btn btn-light text-primary fw-bold rounded-pill px-4">Login</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="main-container">
+            <main role="main">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <footer class="footer text-center">
+        <div class="container">
+            &copy; 2025 - Digital Health Tracker
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

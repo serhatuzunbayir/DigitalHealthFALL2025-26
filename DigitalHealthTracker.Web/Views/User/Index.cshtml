@@ -1,0 +1,148 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.UserDashboardVm
+
+@{
+    ViewData["Title"] = "User Dashboard";
+}
+
+<h2>User Dashboard</h2>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["UserMsg"] != null)
+{
+    <div class="alert alert-info">@TempData["UserMsg"]</div>
+}
+
+<hr />
+
+<h3>Health Summary</h3>
+
+@if (Model.Health != null)
+{
+    <table class="table table-bordered" style="max-width:500px;">
+        <tr>
+            <th>BMI</th>
+            <td>@Model.Health.Bmi.ToString("F2")</td>
+        </tr>
+        <tr>
+            <th>Category</th>
+            <td>@Model.Health.Category</td>
+        </tr>
+        <tr>
+            <th>Target Weight</th>
+            <td>@Model.Health.TargetWeightKg.ToString("F2") kg</td>
+        </tr>
+        <tr>
+            <th>Difference</th>
+            <td>@Model.Health.WeightDiffKg.ToString("F2") kg</td>
+        </tr>
+    </table>
+}
+else
+{
+    <p><i>Health data not available. Please update your profile.</i></p>
+}
+
+<hr />
+
+<h3>Active Programs</h3>
+
+@if (Model.ActiveAssignments.Count == 0)
+{
+    <p><i>No active programs.</i></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Trainer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var a in Model.ActiveAssignments)
+            {
+                <tr>
+                    <td>@a.ProgramTitle</td>
+                    <td>@a.TrainerName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+
+<h3>All Assigned Programs</h3>
+
+@if (Model.AssignedPrograms.Count == 0)
+{
+    <p><i>No assigned programs yet.</i></p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Program</th>
+                <th>Trainer</th>
+                <th>Status</th>
+                <th>Assigned Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.AssignedPrograms)
+            {
+                <tr>
+                    <td>@p.ProgramTitle</td>
+                    <td>@p.TrainerName</td>
+                    <td>
+                        @if (p.Status == "Pending")
+                        {
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        }
+                        else if (p.Status == "Active")
+                        {
+
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else if (p.Status == "Completed")
+                        {
+
+                            <span class="badge bg-primary">Completed</span>
+                        }
+                        else
+                        {
+
+                            <span>@p.Status</span>
+                        }
+                    </td>
+
+                    <td>@p.AssignedAt</td>
+
+                    <td>
+                        @if (p.Status == "Pending")
+                        {
+                            <form asp-controller="User" asp-action="ApproveAssignedProgram" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                            </form>
+                        }
+
+                        @if (p.Status == "Approved" || p.Status == "Active")
+                        {
+                            <form asp-controller="User" asp-action="CompleteWithLogs" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button type="submit" class="btn btn-sm btn-primary">Complete Workout</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

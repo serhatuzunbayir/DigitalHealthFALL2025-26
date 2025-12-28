@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Çözüm Öğeleri/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="DigitalHealthTracker.Api/DigitalHealthTracker.Api.csproj" Id="678a358d-edd8-4de1-8419-c8d6037439ed" />
+  <Project Path="DigitalHealthTracker.Contracts/DigitalHealthTracker.Contracts.csproj" Id="45a1d4db-9dda-4e24-8b46-875ed8015627" />
+  <Project Path="DigitalHealthTracker.Desktop/DigitalHealthTracker.Desktop.csproj" Id="c30669a4-f55e-434b-aab9-6dd71bb5294e" />
+  <Project Path="DigitalHealthTracker.Web/DigitalHealthTracker.Web.csproj" Id="c5e20472-212b-4e15-a3d2-3762570289e2" />
+  <Project Path="DigitalHealthTracker/DigitalHealthTracker.Data.csproj" />
+</Solution>

@@ -1,0 +1,8 @@
+*.db
+*.db-wal
+*.db-shm
+App_Data/
+_run/
+.vs/
+bin/
+obj/

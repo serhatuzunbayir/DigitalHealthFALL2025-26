@@ -1,0 +1,23 @@
+[
+  {
+    "Name": "Yeni Profil",
+    "Projects": [
+      {
+        "Path": "DigitalHealthTracker.Api\\DigitalHealthTracker.Api.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "DigitalHealthTracker.Desktop\\DigitalHealthTracker.Desktop.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "DigitalHealthTracker.Web\\DigitalHealthTracker.Web.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "DigitalHealthTracker.MVC\\DigitalHealthTracker.MVC.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

@@ -1,0 +1,64 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.UserProfileVm
+
+<h1>My Profile</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <p><b>@Model.Error</b></p>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <p>
+        <label>Name *</label><br />
+        <input name="Name" value="@Model.Name" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Name)</div>
+    </p>
+
+    <p>
+        <label>Surname *</label><br />
+        <input name="Surname" value="@Model.Surname" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Surname)</div>
+    </p>
+
+    <p>
+        <label>Phone *</label><br />
+        <input name="Phone" value="@Model.Phone" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Phone)</div>
+    </p>
+
+    <p>
+        <label>Email *</label><br />
+        <input name="Email" value="@Model.Email" />
+    </p>
+
+    <p>
+        <label>Height (cm) *</label><br />
+        <input name="HeightCm" value="@Model.HeightCm" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.HeightCm)</div>
+    </p>
+
+    <p>
+        <label>Weight (kg) *</label><br />
+        <input name="WeightKg" value="@Model.WeightKg" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.WeightKg)</div>
+    </p>
+
+    <p>
+        <label>Birth Year *</label><br />
+        <input name="BirthYear" value="@Model.BirthYear" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.BirthYear)</div>
+    </p>
+
+    <p>
+        <label>Medical Record *</label><br />
+        <textarea name="MedicalRecord" rows="3" cols="40">@Model.MedicalRecord</textarea>
+    </p>
+
+    <button type="submit">Save</button>
+</form>
+
+<p style="margin-top:12px;">
+    <a href="/User">Back to Dashboard</a>
+</p>

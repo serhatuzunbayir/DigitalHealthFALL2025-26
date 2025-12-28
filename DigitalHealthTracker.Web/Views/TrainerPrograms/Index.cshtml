@@ -1,0 +1,50 @@
+﻿@model List<DigitalHealthTracker.Web.ViewModels.ProgramListRowVm>
+
+@{
+    ViewData["Title"] = "My Programs";
+}
+
+<h1>My Programs</h1>
+
+<p>
+    <a href="/Trainer/Programs/Create">Create Program</a>
+</p>
+
+@if (Model == null || Model.Count == 0)
+{
+    <p>No programs.</p>
+}
+else
+{
+    <table border="1" cellpadding="6">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th style="width:220px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Id</td>
+                    <td>@p.Title</td>
+                    <td style="display:flex;gap:10px;align-items:center;">
+                        <a href="/Trainer/Programs/@p.Id/Edit">Edit</a>
+
+                        <form method="post"
+                              action="/Trainer/Programs/@p.Id/Delete"
+                              style="margin:0;"
+                              onsubmit="return confirm('Bu programı silmek istediğine emin misin?');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit" style="color:#b00020;">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

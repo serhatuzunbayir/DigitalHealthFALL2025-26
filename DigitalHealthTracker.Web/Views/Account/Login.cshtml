@@ -1,0 +1,52 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.LoginVm
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+
+@if (TempData["Error"] is not null)
+{
+    <p style="color:red;"><b>@TempData["Error"]</b></p>
+}
+
+@if (TempData["Success"] is not null)
+{
+    <p style="color:green;"><b>@TempData["Success"]</b></p>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <p>
+        <label>Phone</label><br />
+        <input asp-for="Phone" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Phone)</div>
+    </p>
+
+    <p>
+        <label>Password</label><br />
+        <input asp-for="Password" type="password" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Password)</div>
+    </p>
+
+    <p>
+        <label>Role</label><br />
+        <select asp-for="Role">
+            <option value="User">User</option>
+            <option value="Trainer">Trainer</option>
+            <option value="Admin">Admin</option>
+        </select>
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Role)</div>
+    </p>
+
+    <button type="submit">Login</button>
+</form>
+
+<hr />
+
+<div style="display:flex; gap:12px; margin-top:10px;">
+    <a href="/Account/RegisterUser">Register as User</a>
+    <a href="/Account/RegisterTrainer">Register as Trainer</a>
+</div>

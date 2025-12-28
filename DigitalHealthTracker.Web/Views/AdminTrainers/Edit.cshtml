@@ -1,0 +1,58 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.Admin.AdminTrainerEditVm
+
+@{
+    ViewData["Title"] = "Edit Trainer";
+}
+
+<h1>Edit Trainer</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <div style="padding:10px;border:1px solid #f44336;background:#ffebee;margin-bottom:12px;">
+        @Model.Error
+    </div>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+
+    <p>
+        <label>Name *</label><br />
+        <input asp-for="Name" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Name)</div>
+    </p>
+
+    <p>
+        <label>Surname *</label><br />
+        <input asp-for="Surname" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Surname)</div>
+    </p>
+
+    <p>
+        <label>Phone *</label><br />
+        <input asp-for="Phone" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Phone)</div>
+    </p>
+
+    <p>
+        <label>Email (optional)</label><br />
+        <input asp-for="Email" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Email)</div>
+    </p>
+
+    <p>
+        <label>
+            <input asp-for="IsApproved" />
+            Approved
+        </label>
+    </p>
+
+    <button type="submit">Save</button>
+    <a href="/Admin/Trainers" style="margin-left:10px;">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
