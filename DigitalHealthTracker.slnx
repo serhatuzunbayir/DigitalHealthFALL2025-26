@@ -2,6 +2,7 @@
   <Folder Name="/Çözüm Öğeleri/">
     <File Path=".gitignore" />
   </Folder>
+  <Project Path="DigitalHealthTracker.Api.Tests/DigitalHealthTracker.Api.Tests.csproj" Id="1622bf5b-70f6-44dc-a7e4-a78438635f7e" />
   <Project Path="DigitalHealthTracker.Api/DigitalHealthTracker.Api.csproj" Id="678a358d-edd8-4de1-8419-c8d6037439ed" />
   <Project Path="DigitalHealthTracker.Contracts/DigitalHealthTracker.Contracts.csproj" Id="45a1d4db-9dda-4e24-8b46-875ed8015627" />
   <Project Path="DigitalHealthTracker.Desktop/DigitalHealthTracker.Desktop.csproj" Id="c30669a4-f55e-434b-aab9-6dd71bb5294e" />
