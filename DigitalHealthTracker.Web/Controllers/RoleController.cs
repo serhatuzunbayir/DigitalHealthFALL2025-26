@@ -11,8 +11,8 @@ public class RoleController : Controller
     // ADMIN
     // =========================
     [RequireRole("Admin")]
-    [HttpGet("/Admin")]
-    public async Task<IActionResult> Admin()
+	[HttpGet("/Role/Admin")]
+	public async Task<IActionResult> AdminLanding()
     {
         var client = HttpContext.RequestServices
             .GetRequiredService<IHttpClientFactory>()

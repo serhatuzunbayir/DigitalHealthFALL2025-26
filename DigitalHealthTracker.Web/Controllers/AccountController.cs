@@ -75,17 +75,11 @@ public class AccountController : Controller
         HttpContext.Session.SetString("Role", role);
         HttpContext.Session.SetString("DisplayName", string.IsNullOrWhiteSpace(displayName) ? vm.Phone : displayName);
 
-        // ============================================================
-        // 🛠️ DÜZELTME BURADA YAPILDI (404 HATASINI ÇÖZEN KISIM)
-        // ============================================================
-
-        // Eskiden: return Redirect("/Trainer");  <- Bu çalışmıyor çünkü adres değişti.
-        // Yeni: RedirectToAction kullanarak nokta atışı yapıyoruz.
-
+        
         if (role == "Admin")
         {
             // Eğer AdminUsersController kullanıyorsan:
-            return RedirectToAction("Index", "AdminUsers");
+            return RedirectToAction("Index", "Admin");
             // Eğer hala eski RoleController yapısındaysan: return Redirect("/Admin");
         }
 

@@ -12,7 +12,7 @@
     // Eğer giriş yapmışsa rolüne göre kendi dashboard'una gitsin
     if (role == "Admin")
     {
-        brandController = "AdminUsers"; // Senin Admin panelin burası
+        brandController = "Admin"; // Senin Admin panelin burası
         brandAction = "Index";
     }
     else if (role == "Trainer")
@@ -115,7 +115,7 @@
                             if (role == "Admin")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-controller="AdminUsers" asp-action="Index">Dashboard</a>
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">Dashboard</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" asp-controller="AdminUsers" asp-action="Index">Users</a>

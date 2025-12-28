@@ -93,7 +93,7 @@ namespace DigitalHealthTracker.Api.Controllers
 		}
 
 		// DELETE: /api/Trainers/{id}
-		[HttpDelete("{id:int}")]
+		/*[HttpDelete("{id:int}")]
 		public async Task<IActionResult> Delete(int id)
 		{
 			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
@@ -102,7 +102,42 @@ namespace DigitalHealthTracker.Api.Controllers
 			_context.Trainers.Remove(t);
 			await _context.SaveChangesAsync();
 			return Ok();
+		}*/
+
+		// DELETE: /api/Trainers/{id}
+		[HttpDelete("{id:int}")]
+		public async Task<IActionResult> Delete(int id)
+		{
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
+
+			// 1) Logs
+			var logs = await _context.WorkoutLogs
+				.Where(l => l.TrainerId == id)
+				.ToListAsync();
+			_context.WorkoutLogs.RemoveRange(logs);
+
+			// 2) Program assignments (trainer-user ilişkisi)
+			var assigns = await _context.AssignedPrograms
+				.Where(a => a.TrainerId == id)
+				.ToListAsync();
+			_context.AssignedPrograms.RemoveRange(assigns);
+
+			// 3) Trainer programs
+			var programs = await _context.WorkoutPrograms
+				.Where(p => p.TrainerId == id)
+				.ToListAsync();
+			_context.WorkoutPrograms.RemoveRange(programs);
+
+			// 4) Trainer
+			_context.Trainers.Remove(t);
+
+			await _context.SaveChangesAsync();
+			return Ok();
 		}
+
+
+
 
 		// PUT: /api/Trainers/{id}/approve
 		[HttpPut("{id:int}/approve")]
