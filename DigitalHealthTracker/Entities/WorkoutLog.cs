@@ -22,7 +22,7 @@ namespace DigitalHealthTracker.Data.Entities
 		public int AssignedProgramId { get; set; }
 		public AssignedProgram AssignedProgram { get; set; } = null!;
 
-		public int DayNo { get; set; }
+		public int DayNo { get; set; } // Always assign 1. not used
 		public int Sets { get; set; }
 		public int Reps { get; set; }
 

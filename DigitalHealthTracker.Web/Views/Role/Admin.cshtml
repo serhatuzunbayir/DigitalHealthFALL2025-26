@@ -7,10 +7,10 @@
     | Role: @Context.Session.GetString("Role")
 </p>
 
-<form asp-controller="Account" asp-action="Logout" method="post">
-    @Html.AntiForgeryToken()
-    <button type="submit">Logout</button>
-</form>
+<a href="/Account/Logout">
+    <button type="button">Logout</button>
+</a>
+
 
 <hr />
 
@@ -42,7 +42,10 @@ else
             {
                 <tr>
                     <td>@t.Id</td>
-                    <td>@t.FullName</td>
+
+                    <!-- ✅ FIX: FullName yerine Display kullan -->
+                    <td>@t.Display</td>
+
                     <td>@t.Phone</td>
                     <td>@t.Email</td>
                     <td>

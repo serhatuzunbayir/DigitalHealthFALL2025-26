@@ -98,12 +98,5 @@ namespace DigitalHealthTracker.Data.Entities
 				return "Obese";
 			}
 		}
-
-		// Navigation
-		/*public int? TrainerId { get; set; }
-		public Trainer Trainer { get; set; }
-
-		public ICollection<WorkoutProgram> Programs { get; set; }
-		public ICollection<WorkoutLog> WorkoutLogs { get; set; }*/
 	}
 }

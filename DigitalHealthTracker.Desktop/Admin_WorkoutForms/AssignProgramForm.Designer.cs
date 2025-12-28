@@ -37,14 +37,16 @@
             btnAssign = new Button();
             btnCancel = new Button();
             btnDeleteAssignment = new Button();
+            panel1 = new Panel();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvAssignments).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // dgvAssignments
             // 
             dgvAssignments.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvAssignments.Dock = DockStyle.Top;
-            dgvAssignments.Location = new Point(0, 0);
+            dgvAssignments.Location = new Point(0, 85);
             dgvAssignments.Name = "dgvAssignments";
             dgvAssignments.RowHeadersWidth = 51;
             dgvAssignments.Size = new Size(800, 200);
@@ -86,49 +88,87 @@
             // 
             // btnRefresh
             // 
-            btnRefresh.Location = new Point(174, 405);
+            btnRefresh.BackColor = Color.Teal;
+            btnRefresh.FlatStyle = FlatStyle.Flat;
+            btnRefresh.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnRefresh.ForeColor = Color.WhiteSmoke;
+            btnRefresh.Location = new Point(41, 398);
             btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(94, 29);
+            btnRefresh.Size = new Size(100, 40);
             btnRefresh.TabIndex = 7;
             btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.UseVisualStyleBackColor = false;
             btnRefresh.Click += btnRefresh_Click;
             // 
             // btnAssign
             // 
-            btnAssign.Location = new Point(606, 307);
+            btnAssign.BackColor = Color.Teal;
+            btnAssign.FlatStyle = FlatStyle.Flat;
+            btnAssign.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnAssign.ForeColor = Color.WhiteSmoke;
+            btnAssign.Location = new Point(471, 307);
             btnAssign.Name = "btnAssign";
-            btnAssign.Size = new Size(142, 42);
+            btnAssign.Size = new Size(140, 60);
             btnAssign.TabIndex = 8;
             btnAssign.Text = "Assign Program";
-            btnAssign.UseVisualStyleBackColor = true;
+            btnAssign.UseVisualStyleBackColor = false;
             btnAssign.Click += btnAssign_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(606, 402);
+            btnCancel.BackColor = Color.Teal;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnCancel.ForeColor = Color.WhiteSmoke;
+            btnCancel.Location = new Point(646, 373);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(133, 32);
+            btnCancel.Size = new Size(140, 60);
             btnCancel.TabIndex = 9;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Text = "Close";
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnDeleteAssignment
             // 
-            btnDeleteAssignment.Location = new Point(606, 357);
+            btnDeleteAssignment.BackColor = Color.Teal;
+            btnDeleteAssignment.FlatStyle = FlatStyle.Flat;
+            btnDeleteAssignment.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnDeleteAssignment.ForeColor = Color.WhiteSmoke;
+            btnDeleteAssignment.Location = new Point(471, 373);
             btnDeleteAssignment.Name = "btnDeleteAssignment";
-            btnDeleteAssignment.Size = new Size(142, 39);
+            btnDeleteAssignment.Size = new Size(140, 60);
             btnDeleteAssignment.TabIndex = 11;
             btnDeleteAssignment.Text = "Delete Assignment";
-            btnDeleteAssignment.UseVisualStyleBackColor = true;
+            btnDeleteAssignment.UseVisualStyleBackColor = false;
             btnDeleteAssignment.Click += btnDeleteAssignment_Click;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Teal;
+            panel1.Controls.Add(label1);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(800, 85);
+            panel1.TabIndex = 12;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            label1.ForeColor = Color.WhiteSmoke;
+            label1.Location = new Point(25, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(327, 41);
+            label1.TabIndex = 0;
+            label1.Text = "Digital Health Tracker";
             // 
             // AssignProgramForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(panel1);
             Controls.Add(btnDeleteAssignment);
             Controls.Add(btnCancel);
             Controls.Add(btnAssign);
@@ -141,6 +181,8 @@
             Name = "AssignProgramForm";
             Text = "AssignProgramForm";
             ((System.ComponentModel.ISupportInitialize)dgvAssignments).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -156,5 +198,7 @@
         private Button btnAssign;
         private Button btnCancel;
         private Button btnDeleteAssignment;
+        private Panel panel1;
+        private Label label1;
     }
 }

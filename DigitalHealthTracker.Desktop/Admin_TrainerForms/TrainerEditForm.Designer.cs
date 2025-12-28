@@ -49,28 +49,28 @@
             // 
             // txtName
             // 
-            txtName.Location = new Point(250, 87);
+            txtName.Location = new Point(251, 122);
             txtName.Name = "txtName";
             txtName.Size = new Size(125, 27);
             txtName.TabIndex = 0;
             // 
             // txtSurname
             // 
-            txtSurname.Location = new Point(250, 130);
+            txtSurname.Location = new Point(251, 165);
             txtSurname.Name = "txtSurname";
             txtSurname.Size = new Size(125, 27);
             txtSurname.TabIndex = 1;
             // 
             // txtPhone
             // 
-            txtPhone.Location = new Point(250, 170);
+            txtPhone.Location = new Point(251, 205);
             txtPhone.Name = "txtPhone";
             txtPhone.Size = new Size(125, 27);
             txtPhone.TabIndex = 2;
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(250, 210);
+            txtEmail.Location = new Point(251, 245);
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(125, 27);
             txtEmail.TabIndex = 3;
@@ -78,7 +78,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(120, 90);
+            label1.Location = new Point(121, 125);
             label1.Name = "label1";
             label1.Size = new Size(62, 20);
             label1.TabIndex = 4;
@@ -87,7 +87,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(120, 130);
+            label2.Location = new Point(121, 165);
             label2.Name = "label2";
             label2.Size = new Size(80, 20);
             label2.TabIndex = 5;
@@ -96,7 +96,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(120, 170);
+            label3.Location = new Point(121, 205);
             label3.Name = "label3";
             label3.Size = new Size(63, 20);
             label3.TabIndex = 6;
@@ -105,7 +105,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(120, 210);
+            label4.Location = new Point(121, 245);
             label4.Name = "label4";
             label4.Size = new Size(45, 20);
             label4.TabIndex = 7;
@@ -114,7 +114,7 @@
             // chkIsApproved
             // 
             chkIsApproved.AutoSize = true;
-            chkIsApproved.Location = new Point(120, 300);
+            chkIsApproved.Location = new Point(121, 335);
             chkIsApproved.Name = "chkIsApproved";
             chkIsApproved.Size = new Size(248, 24);
             chkIsApproved.TabIndex = 8;
@@ -145,13 +145,13 @@
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(120, 40);
             btnCancel.TabIndex = 10;
-            btnCancel.Text = "Cancel";
+            btnCancel.Text = "Close";
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // txtBirthYear
             // 
-            txtBirthYear.Location = new Point(250, 250);
+            txtBirthYear.Location = new Point(251, 285);
             txtBirthYear.Name = "txtBirthYear";
             txtBirthYear.Size = new Size(125, 27);
             txtBirthYear.TabIndex = 11;
@@ -159,7 +159,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(120, 250);
+            label5.Location = new Point(121, 285);
             label5.Name = "label5";
             label5.Size = new Size(85, 20);
             label5.TabIndex = 12;
@@ -168,7 +168,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(120, 372);
+            label6.Location = new Point(121, 407);
             label6.Name = "label6";
             label6.Size = new Size(155, 20);
             label6.TabIndex = 13;
@@ -181,7 +181,7 @@
             panel1.Dock = DockStyle.Top;
             panel1.Location = new Point(0, 0);
             panel1.Name = "panel1";
-            panel1.Size = new Size(882, 70);
+            panel1.Size = new Size(882, 85);
             panel1.TabIndex = 14;
             // 
             // lblTrainerEditTitle
@@ -189,7 +189,7 @@
             lblTrainerEditTitle.AutoSize = true;
             lblTrainerEditTitle.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 162);
             lblTrainerEditTitle.ForeColor = Color.WhiteSmoke;
-            lblTrainerEditTitle.Location = new Point(25, 10);
+            lblTrainerEditTitle.Location = new Point(25, 9);
             lblTrainerEditTitle.Name = "lblTrainerEditTitle";
             lblTrainerEditTitle.Size = new Size(327, 41);
             lblTrainerEditTitle.TabIndex = 0;

@@ -10,90 +10,130 @@ namespace DigitalHealthTracker.Api.Controllers
 	public class TrainersController : ControllerBase
 	{
 		private readonly AppDbContext _context;
+		public TrainersController(AppDbContext context) => _context = context;
 
-		public TrainersController(AppDbContext context)
-		{
-			_context = context;
-		}
-
-		// GET: api/Trainers
+		// GET: /api/Trainers
 		[HttpGet]
-		public async Task<ActionResult<List<Trainer>>> GetAll()
+		public async Task<IActionResult> GetAll()
 		{
-			var trainers = await _context.Trainers
-				.OrderBy(t => t.Id)
+			var list = await _context.Trainers
+				.OrderByDescending(t => t.Id)
+				.Select(t => new
+				{
+					t.Id,
+					t.Name,
+					t.Surname,
+					t.Phone,
+					t.Email,
+					t.IsApproved
+				})
 				.ToListAsync();
 
-			return Ok(trainers);
+			return Ok(list);
 		}
 
-		// GET: api/Trainers/pending
-		[HttpGet("pending")]
-		public async Task<ActionResult<List<Trainer>>> GetPending()
-		{
-			var pending = await _context.Trainers
-				.Where(t => t.IsApproved == false)
-				.OrderBy(t => t.Id)
-				.ToListAsync();
-
-			return Ok(pending);
-		}
-
-		// GET: api/Trainers/5
+		// GET: /api/Trainers/{id}
 		[HttpGet("{id:int}")]
-		public async Task<ActionResult<Trainer>> GetById(int id)
+		public async Task<IActionResult> GetById(int id)
 		{
-			var trainer = await _context.Trainers.FindAsync(id);
-			if (trainer == null) return NotFound();
-			return Ok(trainer);
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
+
+			return Ok(new
+			{
+				t.Id,
+				t.Name,
+				t.Surname,
+				t.Phone,
+				t.Email,
+				t.IsApproved
+			});
 		}
 
-		// ❌ ADMIN CREATE YOK (Register ile oluşuyor)
-		// [HttpPost] kaldırıldı
+		// GET: /api/Trainers/pending
+		[HttpGet("pending")]
+		public async Task<IActionResult> GetPending()
+		{
+			var list = await _context.Trainers
+				.Where(t => t.IsApproved == false)
+				.OrderByDescending(t => t.Id)
+				.Select(t => new
+				{
+					t.Id,
+					t.Name,
+					t.Surname,
+					t.Phone,
+					t.Email,
+					t.IsApproved
+				})
+				.ToListAsync();
 
-		// PUT: api/Trainers/5
+			return Ok(list);
+		}
+
+		// PUT: /api/Trainers/{id}
 		[HttpPut("{id:int}")]
-		public async Task<IActionResult> Update(int id, Trainer trainer)
+		public async Task<IActionResult> Update(int id, [FromBody] TrainerUpdateRequest req)
 		{
-			var existing = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
-			if (existing == null) return NotFound($"Trainer not found: {id}");
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
 
-			existing.Name = trainer.Name;
-			existing.Surname = trainer.Surname;
-			existing.Phone = trainer.Phone;
-			existing.Email = trainer.Email;
-			existing.BirthYear = trainer.BirthYear;
+			if (string.IsNullOrWhiteSpace(req.Name) ||
+				string.IsNullOrWhiteSpace(req.Surname) ||
+				string.IsNullOrWhiteSpace(req.Phone))
+				return BadRequest("Name, Surname, Phone are required.");
 
-			// Admin approve/unapprove edebilsin
-			existing.IsApproved = trainer.IsApproved;
+			t.Name = req.Name.Trim();
+			t.Surname = req.Surname.Trim();
+			t.Phone = req.Phone.Trim();
+			t.Email = string.IsNullOrWhiteSpace(req.Email) ? "" : req.Email.Trim();
 
-			// PasswordHash'a dokunma!
-			await _context.SaveChangesAsync();
-			return Ok(existing);
-		}
-
-		// PUT: api/Trainers/5/approve (kalsın)
-		[HttpPut("{id:int}/approve")]
-		public async Task<IActionResult> Approve(int id)
-		{
-			var trainer = await _context.Trainers.FindAsync(id);
-			if (trainer == null) return NotFound($"Trainer not found: {id}");
-
-			trainer.IsApproved = true;
-			await _context.SaveChangesAsync();
-			return Ok(trainer);
-		}
-
-		// DELETE: api/Trainers/5
-		[HttpDelete("{id:int}")]
-		public async Task<IActionResult> Delete(int id)
-		{
-			var trainer = await _context.Trainers.FindAsync(id);
-			if (trainer == null) return NotFound();
-
-			_context.Trainers.Remove(trainer);
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
+
+		// DELETE: /api/Trainers/{id}
+		[HttpDelete("{id:int}")]
+		public async Task<IActionResult> Delete(int id)
+		{
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
+
+			_context.Trainers.Remove(t);
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
+		// PUT: /api/Trainers/{id}/approve
+		[HttpPut("{id:int}/approve")]
+		public async Task<IActionResult> Approve(int id)
+		{
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
+
+			t.IsApproved = true;
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+
+		// ✅ PUT: /api/Trainers/{id}/unapprove
+		[HttpPut("{id:int}/unapprove")]
+		public async Task<IActionResult> Unapprove(int id)
+		{
+			var t = await _context.Trainers.FirstOrDefaultAsync(x => x.Id == id);
+			if (t == null) return NotFound("Trainer not found.");
+
+			t.IsApproved = false;
+			await _context.SaveChangesAsync();
+			return Ok();
+		}
+	}
+
+	public class TrainerUpdateRequest
+	{
+		public string Name { get; set; } = "";
+		public string Surname { get; set; } = "";
+		public string Phone { get; set; } = "";
+		public string? Email { get; set; }
 	}
 }

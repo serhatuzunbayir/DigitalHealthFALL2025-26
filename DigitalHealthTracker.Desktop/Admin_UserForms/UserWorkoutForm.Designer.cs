@@ -47,7 +47,7 @@
             // 
             // btnCompleteDay
             // 
-            btnCompleteDay.Location = new Point(603, 283);
+            btnCompleteDay.Location = new Point(603, 299);
             btnCompleteDay.Name = "btnCompleteDay";
             btnCompleteDay.Size = new Size(116, 51);
             btnCompleteDay.TabIndex = 6;
@@ -77,7 +77,7 @@
             // 
             // btnClose
             // 
-            btnClose.Location = new Point(603, 354);
+            btnClose.Location = new Point(603, 376);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(116, 42);
             btnClose.TabIndex = 9;

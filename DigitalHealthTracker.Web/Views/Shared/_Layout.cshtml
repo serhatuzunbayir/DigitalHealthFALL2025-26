@@ -14,22 +14,29 @@
 </head>
 <body>
     <header style="padding:10px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between;">
-        <div style="display:flex;gap:10px;align-items:center;">
-            <a href="/" style="text-decoration:none;font-weight:bold;">DigitalHealthTracker</a>
+        <div style="display:flex;gap:14px;align-items:center;">
+            <a href="/" style="text-decoration:none;font-weight:bold;">
+                DigitalHealthTracker
+            </a>
 
             @if (userId is not null)
             {
-                @if (role == "Admin")
+                @* ================= ADMIN ================= *@
+                if (role == "Admin")
                 {
-                    <a href="/Admin">Admin</a>
+                    <a href="/Admin">Dashboard</a>
+                    <a href="/Admin/Users">Users</a>
+                    <a href="/Admin/Trainers">Trainers</a>
                 }
+                @* ================= TRAINER ================= *@
                 else if (role == "Trainer")
                 {
-                    <a href="/Trainer">Trainer</a>
+                    <a href="/Trainer">Dashboard</a>
                     <a href="/Trainer/Programs">Programs</a>
                     <a href="/Trainer/Workouts">Workouts</a>
                     <a href="/Trainer/Assign">Assign</a>
                 }
+                @* ================= USER ================= *@
                 else if (role == "User")
                 {
                     <a href="/User">Dashboard</a>
@@ -42,8 +49,12 @@
         <div style="display:flex;gap:10px;align-items:center;">
             @if (userId is not null)
             {
-                <span style="opacity:.8;">@displayName (@role)</span>
-                <a href="/Account/Logout">Logout</a>
+                <span style="opacity:.8;">
+                    @displayName (@role)
+                </span>
+                <a href="/Account/Logout">
+                    <button type="button">Logout</button>
+                </a>
             }
             else
             {

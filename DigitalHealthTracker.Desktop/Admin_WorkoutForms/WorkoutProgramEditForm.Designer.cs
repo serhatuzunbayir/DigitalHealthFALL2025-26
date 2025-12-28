@@ -41,7 +41,10 @@
             btnCancel = new Button();
             btnSave = new Button();
             btnRemoveItem = new Button();
+            panel1 = new Panel();
+            label3 = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // txtTitle
@@ -111,19 +114,22 @@
             // 
             // btnAddItem
             // 
-            btnAddItem.Location = new Point(383, 357);
+            btnAddItem.BackColor = Color.Teal;
+            btnAddItem.FlatStyle = FlatStyle.Flat;
+            btnAddItem.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnAddItem.ForeColor = Color.WhiteSmoke;
+            btnAddItem.Location = new Point(490, 315);
             btnAddItem.Name = "btnAddItem";
-            btnAddItem.Size = new Size(104, 62);
+            btnAddItem.Size = new Size(110, 60);
             btnAddItem.TabIndex = 10;
             btnAddItem.Text = "Add Item";
-            btnAddItem.UseVisualStyleBackColor = true;
+            btnAddItem.UseVisualStyleBackColor = false;
             btnAddItem.Click += btnAddItem_Click;
             // 
             // dgvItems
             // 
             dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvItems.Dock = DockStyle.Top;
-            dgvItems.Location = new Point(0, 0);
+            dgvItems.Location = new Point(0, 85);
             dgvItems.Name = "dgvItems";
             dgvItems.RowHeadersWidth = 51;
             dgvItems.Size = new Size(800, 200);
@@ -131,39 +137,73 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(676, 268);
+            btnCancel.BackColor = Color.Teal;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnCancel.ForeColor = Color.WhiteSmoke;
+            btnCancel.Location = new Point(666, 381);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(94, 29);
+            btnCancel.Size = new Size(110, 60);
             btnCancel.TabIndex = 13;
-            btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.Text = "Close";
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(676, 219);
+            btnSave.BackColor = Color.Teal;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnSave.ForeColor = Color.WhiteSmoke;
+            btnSave.Location = new Point(666, 315);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(94, 29);
+            btnSave.Size = new Size(110, 60);
             btnSave.TabIndex = 14;
             btnSave.Text = "Save";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             // 
             // btnRemoveItem
             // 
-            btnRemoveItem.Location = new Point(511, 357);
+            btnRemoveItem.BackColor = Color.Teal;
+            btnRemoveItem.FlatStyle = FlatStyle.Flat;
+            btnRemoveItem.Font = new Font("Segoe UI", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnRemoveItem.ForeColor = Color.WhiteSmoke;
+            btnRemoveItem.Location = new Point(490, 381);
             btnRemoveItem.Name = "btnRemoveItem";
-            btnRemoveItem.Size = new Size(109, 61);
+            btnRemoveItem.Size = new Size(110, 60);
             btnRemoveItem.TabIndex = 15;
             btnRemoveItem.Text = "Remove Selected Item";
-            btnRemoveItem.UseVisualStyleBackColor = true;
+            btnRemoveItem.UseVisualStyleBackColor = false;
             btnRemoveItem.Click += btnRemoveItem_Click;
+            // 
+            // panel1
+            // 
+            panel1.BackColor = Color.Teal;
+            panel1.Controls.Add(label3);
+            panel1.Dock = DockStyle.Top;
+            panel1.Location = new Point(0, 0);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(800, 85);
+            panel1.TabIndex = 16;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI", 18F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            label3.ForeColor = Color.WhiteSmoke;
+            label3.Location = new Point(25, 9);
+            label3.Name = "label3";
+            label3.Size = new Size(327, 41);
+            label3.TabIndex = 0;
+            label3.Text = "Digital Health Tracker";
             // 
             // WorkoutProgramEditForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(panel1);
             Controls.Add(btnRemoveItem);
             Controls.Add(btnSave);
             Controls.Add(btnCancel);
@@ -180,6 +220,8 @@
             Name = "WorkoutProgramEditForm";
             Text = "WorkoutProgramEditForm";
             ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -200,5 +242,7 @@
         private Button btnCancel;
         private Button btnSave;
         private Button btnRemoveItem;
+        private Panel panel1;
+        private Label label3;
     }
 }

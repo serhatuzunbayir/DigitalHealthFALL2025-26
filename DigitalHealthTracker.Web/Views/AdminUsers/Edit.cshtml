@@ -1,0 +1,75 @@
+﻿@model DigitalHealthTracker.Web.ViewModels.Admin.AdminUserEditVm
+
+@{
+    ViewData["Title"] = "Edit User";
+}
+
+<h1>Edit User</h1>
+
+@if (!string.IsNullOrWhiteSpace(Model.Error))
+{
+    <div style="padding:10px;border:1px solid #f44336;background:#ffebee;margin-bottom:12px;">
+        @Model.Error
+    </div>
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="Id" />
+
+    <p>
+        <label>Name *</label><br />
+        <input asp-for="Name" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Name)</div>
+    </p>
+
+    <p>
+        <label>Surname *</label><br />
+        <input asp-for="Surname" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Surname)</div>
+    </p>
+
+    <p>
+        <label>Phone *</label><br />
+        <input asp-for="Phone" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Phone)</div>
+    </p>
+
+    <p>
+        <label>Email (optional)</label><br />
+        <input asp-for="Email" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.Email)</div>
+    </p>
+
+    <p>
+        <label>Height (cm)</label><br />
+        <input asp-for="HeightCm" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.HeightCm)</div>
+    </p>
+
+    <p>
+        <label>Weight (kg)</label><br />
+        <input asp-for="WeightKg" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.WeightKg)</div>
+    </p>
+
+    <p>
+        <label>Birth Year</label><br />
+        <input asp-for="BirthYear" />
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.BirthYear)</div>
+    </p>
+
+    <p>
+        <label>Medical Record</label><br />
+        <textarea asp-for="MedicalRecord" rows="3" cols="50"></textarea>
+        <div style="color:red;">@Html.ValidationMessageFor(x => x.MedicalRecord)</div>
+    </p>
+
+    <button type="submit">Save</button>
+    <a href="/Admin/Users" style="margin-left:10px;">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

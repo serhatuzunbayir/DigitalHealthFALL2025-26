@@ -1,0 +1,57 @@
+﻿@model List<DigitalHealthTracker.Web.ViewModels.Admin.AdminTrainerRowVm>
+
+@{
+    ViewData["Title"] = "Manage Trainers";
+}
+
+<h1>Manage Trainers</h1>
+
+@if (Model == null || Model.Count == 0)
+{
+    <p>No trainers found.</p>
+}
+else
+{
+    <table border="1" cellpadding="6" cellspacing="0" style="width:100%;max-width:1100px;">
+        <thead>
+            <tr>
+                <th style="width:70px;">Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th style="width:170px;">Phone</th>
+                <th>Email</th>
+                <th style="width:110px;">Approved</th>
+                <th style="width:280px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var t in Model)
+            {
+                <tr>
+                    <td>@t.Id</td>
+                    <td>@t.Name</td>
+                    <td>@t.Surname</td>
+                    <td>@t.Phone</td>
+                    <td>@(string.IsNullOrWhiteSpace(t.Email) ? "-" : t.Email)</td>
+                    <td>@(t.IsApproved ? "Yes" : "No")</td>
+                    <td style="display:flex; gap:8px; align-items:center;">
+                        <a href="/Admin/Trainers/Edit/@t.Id">Edit</a>
+
+                        <form method="post" action="/Admin/Trainers/ToggleApproval/@t.Id" style="margin:0;">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">
+                                @(t.IsApproved ? "Unapprove" : "Approve")
+                            </button>
+                        </form>
+
+                        <form method="post" action="/Admin/Trainers/Delete/@t.Id" style="margin:0;"
+                              onsubmit="return confirm('Delete this trainer? This may also remove related programs/assignments/logs.');">
+                            @Html.AntiForgeryToken()
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

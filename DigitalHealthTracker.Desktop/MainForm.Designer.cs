@@ -62,9 +62,9 @@
             btnManageUsers.FlatStyle = FlatStyle.Flat;
             btnManageUsers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageUsers.ForeColor = Color.White;
-            btnManageUsers.Location = new Point(25, 111);
+            btnManageUsers.Location = new Point(50, 115);
             btnManageUsers.Name = "btnManageUsers";
-            btnManageUsers.Size = new Size(220, 111);
+            btnManageUsers.Size = new Size(230, 110);
             btnManageUsers.TabIndex = 0;
             btnManageUsers.Text = "Manage Users";
             btnManageUsers.UseVisualStyleBackColor = false;
@@ -76,9 +76,9 @@
             btnManageTrainers.FlatStyle = FlatStyle.Flat;
             btnManageTrainers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageTrainers.ForeColor = Color.White;
-            btnManageTrainers.Location = new Point(650, 102);
+            btnManageTrainers.Location = new Point(603, 115);
             btnManageTrainers.Name = "btnManageTrainers";
-            btnManageTrainers.Size = new Size(220, 120);
+            btnManageTrainers.Size = new Size(230, 110);
             btnManageTrainers.TabIndex = 1;
             btnManageTrainers.Text = "Manage Trainers";
             btnManageTrainers.UseVisualStyleBackColor = false;
@@ -94,27 +94,35 @@
             pnlHeader.Dock = DockStyle.Top;
             pnlHeader.Location = new Point(0, 0);
             pnlHeader.Name = "pnlHeader";
-            pnlHeader.Size = new Size(882, 80);
+            pnlHeader.Size = new Size(882, 84);
             pnlHeader.TabIndex = 2;
             // 
             // btnEditMyProfile
             // 
-            btnEditMyProfile.Location = new Point(679, 15);
+            btnEditMyProfile.BackColor = Color.WhiteSmoke;
+            btnEditMyProfile.FlatStyle = FlatStyle.Flat;
+            btnEditMyProfile.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnEditMyProfile.ForeColor = Color.Teal;
+            btnEditMyProfile.Location = new Point(664, 15);
             btnEditMyProfile.Name = "btnEditMyProfile";
-            btnEditMyProfile.Size = new Size(94, 50);
+            btnEditMyProfile.Size = new Size(95, 50);
             btnEditMyProfile.TabIndex = 3;
             btnEditMyProfile.Text = "Edit My Profile";
-            btnEditMyProfile.UseVisualStyleBackColor = true;
+            btnEditMyProfile.UseVisualStyleBackColor = false;
             btnEditMyProfile.Click += btnEditMyProfile_Click;
             // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(803, 21);
+            btnLogout.BackColor = Color.WhiteSmoke;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnLogout.ForeColor = Color.Teal;
+            btnLogout.Location = new Point(776, 15);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(67, 38);
+            btnLogout.Size = new Size(95, 50);
             btnLogout.TabIndex = 2;
             btnLogout.Text = "Logout";
-            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.UseVisualStyleBackColor = false;
             btnLogout.Click += btnLogout_Click;
             // 
             // lblSubTitle
@@ -169,12 +177,16 @@
             // 
             // btnStudentLogs
             // 
-            btnStudentLogs.Location = new Point(603, 241);
+            btnStudentLogs.BackColor = Color.Teal;
+            btnStudentLogs.FlatStyle = FlatStyle.Flat;
+            btnStudentLogs.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnStudentLogs.ForeColor = Color.WhiteSmoke;
+            btnStudentLogs.Location = new Point(603, 217);
             btnStudentLogs.Name = "btnStudentLogs";
-            btnStudentLogs.Size = new Size(197, 70);
+            btnStudentLogs.Size = new Size(230, 110);
             btnStudentLogs.TabIndex = 17;
             btnStudentLogs.Text = "Student Logs";
-            btnStudentLogs.UseVisualStyleBackColor = true;
+            btnStudentLogs.UseVisualStyleBackColor = false;
             btnStudentLogs.Click += btnStudentLogs_Click;
             // 
             // lblWeightDiffValueTxt
@@ -252,62 +264,86 @@
             // 
             // btnApproveAssignment
             // 
-            btnApproveAssignment.Location = new Point(362, 241);
+            btnApproveAssignment.BackColor = Color.Teal;
+            btnApproveAssignment.FlatStyle = FlatStyle.Flat;
+            btnApproveAssignment.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnApproveAssignment.ForeColor = Color.WhiteSmoke;
+            btnApproveAssignment.Location = new Point(316, 217);
             btnApproveAssignment.Name = "btnApproveAssignment";
-            btnApproveAssignment.Size = new Size(170, 81);
+            btnApproveAssignment.Size = new Size(230, 110);
             btnApproveAssignment.TabIndex = 8;
             btnApproveAssignment.Text = "Approve Assignment";
-            btnApproveAssignment.UseVisualStyleBackColor = true;
+            btnApproveAssignment.UseVisualStyleBackColor = false;
             btnApproveAssignment.Click += btnApproveAssignment_Click;
             // 
             // btnUserWorkout
             // 
-            btnUserWorkout.Location = new Point(332, 339);
+            btnUserWorkout.BackColor = Color.Teal;
+            btnUserWorkout.FlatStyle = FlatStyle.Flat;
+            btnUserWorkout.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnUserWorkout.ForeColor = Color.WhiteSmoke;
+            btnUserWorkout.Location = new Point(316, 333);
             btnUserWorkout.Name = "btnUserWorkout";
-            btnUserWorkout.Size = new Size(176, 81);
+            btnUserWorkout.Size = new Size(230, 110);
             btnUserWorkout.TabIndex = 7;
             btnUserWorkout.Text = "My Workout";
-            btnUserWorkout.UseVisualStyleBackColor = true;
+            btnUserWorkout.UseVisualStyleBackColor = false;
             btnUserWorkout.Click += btnUserWorkout_Click;
             // 
             // btnAssignProgram
             // 
-            btnAssignProgram.Location = new Point(591, 317);
+            btnAssignProgram.BackColor = Color.Teal;
+            btnAssignProgram.FlatStyle = FlatStyle.Flat;
+            btnAssignProgram.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnAssignProgram.ForeColor = Color.WhiteSmoke;
+            btnAssignProgram.Location = new Point(603, 333);
             btnAssignProgram.Name = "btnAssignProgram";
-            btnAssignProgram.Size = new Size(220, 103);
+            btnAssignProgram.Size = new Size(230, 110);
             btnAssignProgram.TabIndex = 6;
             btnAssignProgram.Text = "Assign Program";
-            btnAssignProgram.UseVisualStyleBackColor = true;
+            btnAssignProgram.UseVisualStyleBackColor = false;
             btnAssignProgram.Click += btnAssignProgram_Click;
             // 
             // btnManagePrograms
             // 
+            btnManagePrograms.BackColor = Color.Teal;
+            btnManagePrograms.FlatStyle = FlatStyle.Flat;
+            btnManagePrograms.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnManagePrograms.ForeColor = Color.WhiteSmoke;
             btnManagePrograms.Location = new Point(50, 333);
             btnManagePrograms.Name = "btnManagePrograms";
-            btnManagePrograms.Size = new Size(220, 93);
+            btnManagePrograms.Size = new Size(230, 110);
             btnManagePrograms.TabIndex = 5;
             btnManagePrograms.Text = "Manage Programs";
-            btnManagePrograms.UseVisualStyleBackColor = true;
+            btnManagePrograms.UseVisualStyleBackColor = false;
             btnManagePrograms.Click += btnManagePrograms_Click;
             // 
             // btnManageWorkouts
             // 
-            btnManageWorkouts.Location = new Point(77, 241);
+            btnManageWorkouts.BackColor = Color.Teal;
+            btnManageWorkouts.FlatStyle = FlatStyle.Flat;
+            btnManageWorkouts.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnManageWorkouts.ForeColor = Color.WhiteSmoke;
+            btnManageWorkouts.Location = new Point(50, 217);
             btnManageWorkouts.Name = "btnManageWorkouts";
-            btnManageWorkouts.Size = new Size(180, 86);
+            btnManageWorkouts.Size = new Size(230, 110);
             btnManageWorkouts.TabIndex = 4;
             btnManageWorkouts.Text = "Manage Workouts";
-            btnManageWorkouts.UseVisualStyleBackColor = true;
+            btnManageWorkouts.UseVisualStyleBackColor = false;
             btnManageWorkouts.Click += btnManageWorkouts_Click;
             // 
             // btnApproveTrainers
             // 
-            btnApproveTrainers.Location = new Point(312, 130);
+            btnApproveTrainers.BackColor = Color.Teal;
+            btnApproveTrainers.FlatStyle = FlatStyle.Flat;
+            btnApproveTrainers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
+            btnApproveTrainers.ForeColor = Color.WhiteSmoke;
+            btnApproveTrainers.Location = new Point(316, 115);
             btnApproveTrainers.Name = "btnApproveTrainers";
-            btnApproveTrainers.Size = new Size(234, 92);
+            btnApproveTrainers.Size = new Size(230, 110);
             btnApproveTrainers.TabIndex = 3;
             btnApproveTrainers.Text = "Approve Trainers";
-            btnApproveTrainers.UseVisualStyleBackColor = true;
+            btnApproveTrainers.UseVisualStyleBackColor = false;
             btnApproveTrainers.Click += btnApproveTrainers_Click;
             // 
             // label3

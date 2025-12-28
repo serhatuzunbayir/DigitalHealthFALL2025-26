@@ -13,7 +13,7 @@ namespace DigitalHealthTracker.Data.Entities
 		public int WorkoutId { get; set; }
 		public Workout Workout { get; set; } = null!;
 
-		public int DayNo { get; set; }      // 1(Monday) to 7(Sunday)
+		public int DayNo { get; set; }      // always assigns to 1- not used
 		public int Sets { get; set; }
 		public int Reps { get; set; }
 	}
