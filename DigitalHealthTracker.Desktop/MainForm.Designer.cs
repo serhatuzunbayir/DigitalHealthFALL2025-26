@@ -62,7 +62,7 @@
             btnManageUsers.FlatStyle = FlatStyle.Flat;
             btnManageUsers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageUsers.ForeColor = Color.White;
-            btnManageUsers.Location = new Point(50, 115);
+            btnManageUsers.Location = new Point(50, 99);
             btnManageUsers.Name = "btnManageUsers";
             btnManageUsers.Size = new Size(230, 110);
             btnManageUsers.TabIndex = 0;
@@ -76,7 +76,7 @@
             btnManageTrainers.FlatStyle = FlatStyle.Flat;
             btnManageTrainers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageTrainers.ForeColor = Color.White;
-            btnManageTrainers.Location = new Point(603, 115);
+            btnManageTrainers.Location = new Point(603, 99);
             btnManageTrainers.Name = "btnManageTrainers";
             btnManageTrainers.Size = new Size(230, 110);
             btnManageTrainers.TabIndex = 1;
@@ -181,7 +181,7 @@
             btnStudentLogs.FlatStyle = FlatStyle.Flat;
             btnStudentLogs.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnStudentLogs.ForeColor = Color.WhiteSmoke;
-            btnStudentLogs.Location = new Point(603, 217);
+            btnStudentLogs.Location = new Point(603, 201);
             btnStudentLogs.Name = "btnStudentLogs";
             btnStudentLogs.Size = new Size(230, 110);
             btnStudentLogs.TabIndex = 17;
@@ -268,7 +268,7 @@
             btnApproveAssignment.FlatStyle = FlatStyle.Flat;
             btnApproveAssignment.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnApproveAssignment.ForeColor = Color.WhiteSmoke;
-            btnApproveAssignment.Location = new Point(316, 217);
+            btnApproveAssignment.Location = new Point(316, 201);
             btnApproveAssignment.Name = "btnApproveAssignment";
             btnApproveAssignment.Size = new Size(230, 110);
             btnApproveAssignment.TabIndex = 8;
@@ -282,7 +282,7 @@
             btnUserWorkout.FlatStyle = FlatStyle.Flat;
             btnUserWorkout.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnUserWorkout.ForeColor = Color.WhiteSmoke;
-            btnUserWorkout.Location = new Point(316, 333);
+            btnUserWorkout.Location = new Point(316, 315);
             btnUserWorkout.Name = "btnUserWorkout";
             btnUserWorkout.Size = new Size(230, 110);
             btnUserWorkout.TabIndex = 7;
@@ -296,7 +296,7 @@
             btnAssignProgram.FlatStyle = FlatStyle.Flat;
             btnAssignProgram.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnAssignProgram.ForeColor = Color.WhiteSmoke;
-            btnAssignProgram.Location = new Point(603, 333);
+            btnAssignProgram.Location = new Point(603, 315);
             btnAssignProgram.Name = "btnAssignProgram";
             btnAssignProgram.Size = new Size(230, 110);
             btnAssignProgram.TabIndex = 6;
@@ -310,7 +310,7 @@
             btnManagePrograms.FlatStyle = FlatStyle.Flat;
             btnManagePrograms.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManagePrograms.ForeColor = Color.WhiteSmoke;
-            btnManagePrograms.Location = new Point(50, 333);
+            btnManagePrograms.Location = new Point(50, 315);
             btnManagePrograms.Name = "btnManagePrograms";
             btnManagePrograms.Size = new Size(230, 110);
             btnManagePrograms.TabIndex = 5;
@@ -324,7 +324,7 @@
             btnManageWorkouts.FlatStyle = FlatStyle.Flat;
             btnManageWorkouts.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnManageWorkouts.ForeColor = Color.WhiteSmoke;
-            btnManageWorkouts.Location = new Point(50, 217);
+            btnManageWorkouts.Location = new Point(50, 201);
             btnManageWorkouts.Name = "btnManageWorkouts";
             btnManageWorkouts.Size = new Size(230, 110);
             btnManageWorkouts.TabIndex = 4;
@@ -338,7 +338,7 @@
             btnApproveTrainers.FlatStyle = FlatStyle.Flat;
             btnApproveTrainers.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 162);
             btnApproveTrainers.ForeColor = Color.WhiteSmoke;
-            btnApproveTrainers.Location = new Point(316, 115);
+            btnApproveTrainers.Location = new Point(316, 99);
             btnApproveTrainers.Name = "btnApproveTrainers";
             btnApproveTrainers.Size = new Size(230, 110);
             btnApproveTrainers.TabIndex = 3;
@@ -353,9 +353,9 @@
             label3.ForeColor = Color.Gray;
             label3.Location = new Point(0, 433);
             label3.Name = "label3";
-            label3.Size = new Size(292, 20);
+            label3.Size = new Size(236, 20);
             label3.TabIndex = 2;
-            label3.Text = "SE410 – Digital Health & Fitness Tracker – v1";
+            label3.Text = "SE410 –Digital Health Tracker – v2";
             label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // MainForm
@@ -368,7 +368,7 @@
             Controls.Add(pnlContent);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "MainForm";
-            Text = "Digital Health Tracker – Admin Panel";
+            Text = "Digital Health Tracker – Main Panel";
             Load += MainForm_Load;
             pnlHeader.ResumeLayout(false);
             pnlHeader.PerformLayout();
