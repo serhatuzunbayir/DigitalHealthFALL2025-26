@@ -68,33 +68,51 @@ namespace DigitalHealthTracker.Desktop
             return dgvTrainers.CurrentRow?.DataBoundItem as Trainer;
         }
 
-        private async void btnEditTrainer_Click(object sender, EventArgs e)
-        {
-            var selectedTrainer = GetSelectedTrainer();
-            if (selectedTrainer == null)
-            {
-                MessageBox.Show("Please select a trainer to edit...");
-                return;
-            }
+		private async void btnEditTrainer_Click(object sender, EventArgs e)
+		{
+			var selectedTrainer = GetSelectedTrainer();
+			if (selectedTrainer == null)
+			{
+				MessageBox.Show("Please select a trainer to edit...");
+				return;
+			}
 
-            try
-            {
-                using var frm = new TrainerEditForm(selectedTrainer);
-                if (frm.ShowDialog() != DialogResult.OK) return;
+			try
+			{
+				
+				var wasApproved = selectedTrainer.IsApproved;
 
-                await _trainerApi.UpdateAsync(selectedTrainer.Id, frm.EditedTrainer);
-                await LoadTrainers();
+				using var frm = new TrainerEditForm(selectedTrainer);
+				if (frm.ShowDialog() != DialogResult.OK) return;
 
-                TrainerChanged?.Invoke($"Trainer '{selectedTrainer.Name} {selectedTrainer.Surname}' was updated.");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "Edit Trainer Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+				// Formdan gelen yeni değerler
+				var edited = frm.EditedTrainer;
 
-        private async void btnDeleteTrainer_Click(object sender, EventArgs e)
+				// 1) Önce temel alanları update et (Name/Surname/Phone/Email)
+				await _trainerApi.UpdateAsync(selectedTrainer.Id, edited);
+
+				// 2) Checkbox değiştiyse approve/unapprove endpoint çağır
+				if (edited.IsApproved != wasApproved)
+				{
+					if (edited.IsApproved)
+						await _trainerApi.ApproveAsync(selectedTrainer.Id);
+					else
+						await _trainerApi.UnapproveAsync(selectedTrainer.Id);
+				}
+
+				await LoadTrainers();
+
+				TrainerChanged?.Invoke($"Trainer '{edited.Name} {edited.Surname}' was updated.");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString(), "Edit Trainer Error",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+
+		private async void btnDeleteTrainer_Click(object sender, EventArgs e)
         {
             var selectedTrainer = GetSelectedTrainer();
             if (selectedTrainer == null)

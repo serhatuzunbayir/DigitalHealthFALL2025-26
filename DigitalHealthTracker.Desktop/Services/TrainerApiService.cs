@@ -21,7 +21,7 @@ namespace DigitalHealthTracker.Desktop.Services
 			return trainers ?? new List<Trainer>();
 		}
 
-		// ✅ NEW: GET: api/Trainers/{id}
+		// ✅ GET: api/Trainers/{id}
 		public async Task<Trainer?> GetByIdAsync(int id)
 		{
 			using var client = ApiClient.Create();
@@ -37,18 +37,31 @@ namespace DigitalHealthTracker.Desktop.Services
 			return await resp.Content.ReadFromJsonAsync<Trainer>();
 		}
 
+		// ✅ FIX: PUT /api/Trainers/{id} API body dönmüyor olabilir (boş response)
+		// Bu yüzden JSON parse yapmıyoruz. Güncel halini görmek istiyorsak tekrar GET yapıyoruz.
 		public async Task<Trainer?> UpdateAsync(int id, Trainer trainer)
 		{
 			using var client = ApiClient.Create();
+
 			var resp = await client.PutAsJsonAsync($"/api/Trainers/{id}", trainer);
 			resp.EnsureSuccessStatusCode();
-			return await resp.Content.ReadFromJsonAsync<Trainer>();
+
+			// API Ok() ile boş body dönebilir -> tekrar GET ile güncel veriyi al
+			return await client.GetFromJsonAsync<Trainer>($"/api/Trainers/{id}");
 		}
 
 		public async Task ApproveAsync(int id)
 		{
 			using var client = ApiClient.Create();
 			var resp = await client.PutAsync($"/api/Trainers/{id}/approve", null);
+			resp.EnsureSuccessStatusCode();
+		}
+
+		// ✅ (İleride lazım olacak) Unapprove endpoint'in var: /api/Trainers/{id}/unapprove
+		public async Task UnapproveAsync(int id)
+		{
+			using var client = ApiClient.Create();
+			var resp = await client.PutAsync($"/api/Trainers/{id}/unapprove", null);
 			resp.EnsureSuccessStatusCode();
 		}
 

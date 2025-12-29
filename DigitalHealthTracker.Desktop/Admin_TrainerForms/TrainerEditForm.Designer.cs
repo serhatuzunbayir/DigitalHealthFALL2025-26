@@ -39,8 +39,6 @@
             chkIsApproved = new CheckBox();
             btnSave = new Button();
             btnCancel = new Button();
-            txtBirthYear = new TextBox();
-            label5 = new Label();
             label6 = new Label();
             panel1 = new Panel();
             lblTrainerEditTitle = new Label();
@@ -149,22 +147,6 @@
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
-            // txtBirthYear
-            // 
-            txtBirthYear.Location = new Point(251, 285);
-            txtBirthYear.Name = "txtBirthYear";
-            txtBirthYear.Size = new Size(125, 27);
-            txtBirthYear.TabIndex = 11;
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new Point(121, 285);
-            label5.Name = "label5";
-            label5.Size = new Size(85, 20);
-            label5.TabIndex = 12;
-            label5.Text = "*Birth Year :\r\n";
-            // 
             // label6
             // 
             label6.AutoSize = true;
@@ -202,8 +184,6 @@
             ClientSize = new Size(882, 453);
             Controls.Add(panel1);
             Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(txtBirthYear);
             Controls.Add(btnCancel);
             Controls.Add(btnSave);
             Controls.Add(chkIsApproved);
@@ -236,8 +216,6 @@
         private CheckBox chkIsApproved;
         private Button btnSave;
         private Button btnCancel;
-        private TextBox txtBirthYear;
-        private Label label5;
         private Label label6;
         private Panel panel1;
         private Label lblTrainerEditTitle;

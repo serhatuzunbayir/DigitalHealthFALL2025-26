@@ -79,6 +79,7 @@ namespace DigitalHealthTracker.Desktop
 
                     await _workoutApi.CreateAsync(frm.EditedWorkout);
                     await LoadWorkouts();
+
                     WorkoutChanged?.Invoke("A new workout was added.");
                 }
             }

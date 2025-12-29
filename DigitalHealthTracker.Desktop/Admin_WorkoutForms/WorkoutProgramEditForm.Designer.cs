@@ -132,7 +132,7 @@
             dgvItems.Location = new Point(0, 85);
             dgvItems.Name = "dgvItems";
             dgvItems.RowHeadersWidth = 51;
-            dgvItems.Size = new Size(800, 200);
+            dgvItems.Size = new Size(800, 150);
             dgvItems.TabIndex = 11;
             // 
             // btnCancel

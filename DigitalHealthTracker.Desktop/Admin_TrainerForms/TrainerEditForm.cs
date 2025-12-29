@@ -25,19 +25,20 @@ namespace DigitalHealthTracker.Desktop
 			txtSurname.Text = tempTrainer.Surname;
 			txtPhone.Text = tempTrainer.Phone;
 			txtEmail.Text = tempTrainer.Email;
-			txtBirthYear.Text = tempTrainer.BirthYear > 0 ? tempTrainer.BirthYear.ToString() : "";
+
+
 			chkIsApproved.Checked = tempTrainer.IsApproved;
 
 			if (hideApproval)
 			{
 				chkIsApproved.Visible = false;
-				// Eğer yanında label varsa onun adını biliyorsan onu da kapat:
 				// lblIsApproved.Visible = false;
 			}
 		}
 
 		private void btnSave_Click(object sender, EventArgs e)
 		{
+			// ✅ Zorunlu alanlar: Name, Surname, Phone (BirthYear zorunlu değil)
 			if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtSurname.Text))
 			{
 				MessageBox.Show("Name and Surname are required.");
@@ -50,18 +51,8 @@ namespace DigitalHealthTracker.Desktop
 				return;
 			}
 
-			if (string.IsNullOrWhiteSpace(txtBirthYear.Text))
-			{
-				MessageBox.Show("Birth Year is required.");
-				return;
-			}
-
-			if (!int.TryParse(txtBirthYear.Text, out int birthYear) ||
-				birthYear < 1900 || birthYear > DateTime.Now.Year)
-			{
-				MessageBox.Show("Please enter a valid Birth Year (e.g., 1998).");
-				return;
-			}
+			// ✅ BirthYear opsiyonel: boşsa 0, doluysa validate et
+			int birthYear = 0;
 
 			_trainer = new Trainer
 			{
@@ -70,10 +61,11 @@ namespace DigitalHealthTracker.Desktop
 				Surname = txtSurname.Text.Trim(),
 				Phone = txtPhone.Text.Trim(),
 				Email = txtEmail.Text.Trim(),
+
+				// ✅ Opsiyonel alan
 				BirthYear = birthYear,
 
-				// ✅ Trainer editlerken checkbox görünmez ama value burada kalır.
-				// Trainer için admin onayı değişmesin diye istersek aşağıda ayrıca kilitleyebiliriz:
+				// ✅ Admin checkbox'ı (görünmez olsa bile value taşınır)
 				IsApproved = chkIsApproved.Checked
 			};
 
