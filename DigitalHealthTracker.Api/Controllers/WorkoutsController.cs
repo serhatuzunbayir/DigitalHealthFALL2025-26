@@ -68,9 +68,26 @@ namespace DigitalHealthTracker.Api.Controllers
 			var workout = await _context.Workouts.FindAsync(id);
 			if (workout == null) return NotFound();
 
+			// 1) Bu workout'a bağlı logları sil (WorkoutLogs)
+			var logs = await _context.WorkoutLogs
+				.Where(x => x.WorkoutId == id)
+				.ToListAsync();
+			if (logs.Count > 0)
+				_context.WorkoutLogs.RemoveRange(logs);
+
+			// 2) Bu workout'u kullanan program item'larını sil (WorkoutProgramItems)
+			var items = await _context.WorkoutProgramItems
+				.Where(x => x.WorkoutId == id)
+				.ToListAsync();
+			if (items.Count > 0)
+				_context.WorkoutProgramItems.RemoveRange(items);
+
+			// 3) En son workout'u sil
 			_context.Workouts.Remove(workout);
+
 			await _context.SaveChangesAsync();
 			return Ok();
 		}
+
 	}
 }
