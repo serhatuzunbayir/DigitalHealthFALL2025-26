@@ -1,4 +1,4 @@
-# DigitalHealthFALL2025-26
+# DigitalHealthFALL2025-2026
 
 # SE-410 Project Requirements
 
